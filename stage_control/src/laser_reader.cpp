@@ -56,7 +56,7 @@ void LaserReader::laser_scan_callback(const	sensor_msgs::LaserScan::ConstPtr& sc
 	//laser_scan.angle_min = scan->angle_min;
 
 	std::stringstream scan_info;
-	scan_info << "min angle: " << scan->angle_min << std::endl;
+	scan_info << "range[0]: " << scan->ranges[0] << std::endl;
 //	std::string scaninfo = 
 	ROS_INFO_STREAM("SCAN INFO " << scan_info.str());
 }
