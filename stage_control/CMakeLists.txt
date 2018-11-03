@@ -103,8 +103,12 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(robot_controller src/robot_controller.cpp)
-add_executable(laser_reader     src/laser_reader.cpp src/laser_reader_run.cpp)
+add_executable(robot_controller src/robot_controller_run.cpp
+                                src/robot_controller.cpp 
+                                src/laser_reader.cpp)
+                                
+add_executable(laser_reader     src/laser_reader.cpp 
+                                src/laser_reader_run.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

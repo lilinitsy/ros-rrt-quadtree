@@ -5,7 +5,6 @@
 
 
 #include "robot_controller.h"
-
 /* 	robot prolly has some kind of sensor
 		->	sensor detects obstacles
 			-> So robot uh, subscribes to it, mayyybeeee333e
@@ -17,35 +16,16 @@
 
 RobotController::RobotController()
 {
-	velocity_publisher = node_handle.advertise<geometry_msgs::Twist>("/cmd_vel", 1); // TODO: Look into this more
-//	laser_scan_subscriber = node_handle.subscribe<sensor_msgs::LaserScan>("laser_scan", 60, &RobotController::laser_scan_callback, this);
-
+	velocity_publisher = node_handle.advertise<geometry_msgs::Twist>("cmd_vel", 1); // TODO: Look into this more
+	laser_reader = LaserReader();
 }
 
-
-void RobotController::laser_scan_callback(LaserReader &laser_reader)
+void RobotController::run()
 {
-
-}
-
-
-int main(int argc, char **argv)
-{
-	ros::init(argc, argv, "robot_controller");
-	ros::NodeHandle node_handle;
-
-	// send twist commands
-	geometry_msgs::Twist base_cmd;
-	ros::Rate loop_rate(60);
-
+	ros::Rate rate(10);
 	while(ros::ok())
 	{
-		// TODO: Kinematics
-		
+		ros::spinOnce();
+		laser_reader.scan_world();
 	}
-
-	
-	
-
-	return 0;
 }

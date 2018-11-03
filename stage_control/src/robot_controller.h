@@ -10,11 +10,10 @@ class RobotController
 	public:
 		ros::NodeHandle node_handle;
 		ros::Publisher velocity_publisher;
-		ros::Subscriber laser_scan_subscriber;
+		LaserReader laser_reader;
 
 		RobotController();
+		void run();
 
 	private:
-		// this should not be like this... hmmm
-		void laser_scan_callback(LaserReader &laser_reader);
 };
