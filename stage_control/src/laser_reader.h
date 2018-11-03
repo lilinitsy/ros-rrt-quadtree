@@ -14,8 +14,8 @@ class LaserReader
 		LaserReader();
 		void read_laser_scanner();
 		void scan_world();
-		void move_forward_test();
 
 	private:
-		void laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr& scan);
+		void laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr &scan);
+		float closest_collision(const sensor_msgs::LaserScan::ConstPtr &scan, int num_readings);
 };
