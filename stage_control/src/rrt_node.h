@@ -4,8 +4,8 @@
 #include <geometry_msgs/Pose.h>
 
 
-struct Node
+struct RRTNode
 {
     geometry_msgs::Pose pose;
-    std::vector<Node*> neighbours;
+    std::vector<RRTNode*> neighbours;
 };
