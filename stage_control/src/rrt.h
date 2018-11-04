@@ -11,5 +11,8 @@
 
 class RRT
 {
-    std::vector<RRTNode*> nodes;
+    public:
+        std::vector<RRTNode*> children;
+
+
 };

@@ -6,13 +6,7 @@
 
 
 #include "robot_controller.h"
-/* 	robot prolly has some kind of sensor
-		->	sensor detects obstacles
-			-> So robot uh, subscribes to it, mayyybeeee333e
-		-> robot then calls some quadtree shit
-		-> RRT on the quadtreeeee maybe I should review the notes
 
-*/
 
 
 RobotController::RobotController()
@@ -27,18 +21,25 @@ void RobotController::pose_callback(const nav_msgs::Odometry::ConstPtr &o)
 {
 	pose.orientation = o->pose.pose.orientation;
 	pose.position = o->pose.pose.position;
-	ROS_INFO_STREAM("IN THE POSE CALLBACK, SOMETHING ISN'T WORKING");
-	ROS_INFO_STREAM("Pose orientation: " << pose.orientation);
-	ROS_INFO_STREAM("Pose position: " << pose.position);
-	ROS_INFO_STREAM("Pose orientation pointer: " << o->pose.pose.orientation);
-	ROS_INFO_STREAM("Pose position pointer: " << o->pose.pose.position);
+}
+
+
+RRTNode *RobotController::pick_node()
+{
+
+}
+
+
+bool RobotController::valid_point(geometry_msgs::Point p)
+{
+
 }
 
 
 void RobotController::print_pose()
 {
-//	ROS_INFO_STREAM("Pose orientation: " << pose.orientation);
-//	ROS_INFO_STREAM("Pose position: " << pose.position);
+	ROS_INFO_STREAM("Pose orientation: " << pose.orientation);
+	ROS_INFO_STREAM("Pose position: " << pose.position);
 }
 
 void RobotController::run()
@@ -47,7 +48,7 @@ void RobotController::run()
 	while(ros::ok())
 	{
 		ros::spinOnce();
-		//laser_reader.scan_world();
+		// laser_reader.scan_world(); need a cmdline flag for this
 		print_pose();
 	}
 }
