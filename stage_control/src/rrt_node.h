@@ -7,5 +7,5 @@
 struct RRTNode
 {
     geometry_msgs::Pose pose;
-    std::vector<RRTNode*> neighbours;
+    std::vector<RRTNode*> children;
 };

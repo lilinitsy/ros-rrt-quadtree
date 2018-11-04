@@ -42,6 +42,12 @@ void LaserReader::scan_world()
 }
 
 
+// TODO after hwk1
+void LaserReader::sort_laser_scan_ranges(int num_readings)
+{
+	//std::sort(laser_scan->ranges)
+}
+
 float LaserReader::closest_collision(int num_readings)
 {
 	std::vector<float> ranges = laser_scan->ranges;

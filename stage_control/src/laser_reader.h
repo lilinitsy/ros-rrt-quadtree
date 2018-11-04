@@ -4,6 +4,9 @@
 #include <std_msgs/String.h>
 
 
+// Try openCV for reading in the map
+// so that the laser_scanner doesn't have to be used
+// for this assgn. IT WILL need to be used for final.
 class LaserReader
 {
 	public:
@@ -18,5 +21,8 @@ class LaserReader
 
 	private:
 		void laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr &scan);
-		float closest_collision(int num_readings);
+		void sort_laser_scan_ranges(int num_readings);
+
+		float closest_collision(int num_readings); // may be defunct
+
 };
