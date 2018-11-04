@@ -10,6 +10,7 @@ class LaserReader
 		ros::NodeHandle node_handle;
 		ros::Publisher laser_scan_publisher;
 		ros::Subscriber laser_scan_subscriber;
+		sensor_msgs::LaserScan::ConstPtr laser_scan;
 		
 		LaserReader();
 		void read_laser_scanner();
@@ -17,5 +18,5 @@ class LaserReader
 
 	private:
 		void laser_scan_callback(const sensor_msgs::LaserScan::ConstPtr &scan);
-		float closest_collision(const sensor_msgs::LaserScan::ConstPtr &scan, int num_readings);
+		float closest_collision(int num_readings);
 };

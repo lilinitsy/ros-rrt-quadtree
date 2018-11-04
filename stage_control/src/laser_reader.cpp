@@ -19,11 +19,11 @@ LaserReader::LaserReader()
 void LaserReader::laser_scan_callback(const	sensor_msgs::LaserScan::ConstPtr &scan)
 {
 	int num_readings = (scan->angle_max - scan->angle_min) / scan->angle_increment	;
-
+	laser_scan = scan;
 	std::stringstream scan_info;
 	scan_info << std::endl;
 	scan_info << "Num readings: " << num_readings << std::endl;
-	scan_info << "closest distance: " << std::fixed << std::setprecision(2) << closest_collision(scan, num_readings) << std::endl;
+	scan_info << "closest distance: " << std::fixed << std::setprecision(2) << closest_collision(num_readings) << std::endl;
 	ROS_INFO_STREAM("SCAN INFO: " << scan_info.str());
 }
 
@@ -42,9 +42,9 @@ void LaserReader::scan_world()
 }
 
 
-float LaserReader::closest_collision(const sensor_msgs::LaserScan::ConstPtr &scan, int num_readings)
+float LaserReader::closest_collision(int num_readings)
 {
-	std::vector<float> ranges = scan->ranges;
+	std::vector<float> ranges = laser_scan->ranges;
 	std::sort(ranges.begin(), ranges.end());
 	return ranges[0];
 }
