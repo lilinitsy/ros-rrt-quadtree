@@ -8,6 +8,12 @@
 #include "robot_controller.h"
 
 
+/*
+
+SLAMMED AS FUCK, LOOKING
+SIO TO /map WHEN NOT HAMLSERD
+8?8?*/
+
 
 RobotController::RobotController()
 {
