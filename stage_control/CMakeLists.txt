@@ -105,7 +105,9 @@ include_directories(
 ## Declare a cpp executable
 add_executable(robot_controller src/robot_controller_run.cpp
                                 src/robot_controller.cpp 
-                                src/laser_reader.cpp)
+                                src/laser_reader.cpp
+                                src/rrt_node.cpp
+                                src/rrt.cpp)
                                 
 add_executable(laser_reader     src/laser_reader.cpp 
                                 src/laser_reader_run.cpp)
