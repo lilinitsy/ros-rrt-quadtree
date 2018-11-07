@@ -18,8 +18,7 @@ RobotController::RobotController()
 	velocity_publisher = node_handle.advertise<geometry_msgs::Twist>("cmd_vel", 1); // TODO: Look into this more
 	pose_subscriber = node_handle.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 60, &RobotController::pose_callback, this);
 	laser_reader = LaserReader();
-	//map = ReadMapModule("../../bitmaps/autolab.png");
-	map = ReadMapModule("src/a1_helpers/bitmaps/autolab.png");
+	map = ReadMapModule("src/a1_helpers/bitmaps/autolab.png", 54.0, 58.7); // will need to change at some point to not be hardcoded... or parse the willow world file.
 }
 
 

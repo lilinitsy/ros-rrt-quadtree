@@ -8,17 +8,17 @@ ReadMapModule::ReadMapModule()
 	// nothing to do
 }
 
-ReadMapModule::ReadMapModule(std::string map_path)
+ReadMapModule::ReadMapModule(std::string map_path, float world_max_x, float world_max_y)
 {
 	cv::Mat image = read_map(map_path);
 	
-	map.map = new int*[image.cols];
+	map = new Map*[image.cols];
 	for(int i = 0; i < image.cols; i++)
 	{
-		map.map[i] = new int[image.rows];
+		map[i] = new Map[image.rows];
 	}
 
-	construct_map(image);
+	construct_map(image, world_max_x, world_max_y);
 }
 
 
@@ -36,7 +36,7 @@ cv::Mat ReadMapModule::read_map(std::string map_path)
 }
 
 
-void ReadMapModule::construct_map(cv::Mat image)
+void ReadMapModule::construct_map(cv::Mat image, float world_max_x, float world_max_y)
 {
 	printf("i: %d, j: %d\n", image.cols, image.rows);
 	for(int i = 0; i < image.cols; i++)
@@ -44,13 +44,24 @@ void ReadMapModule::construct_map(cv::Mat image)
 		for(int j = 0; j < image.rows; j++)
 		{
 			cv::Scalar colour = image.at<uchar>(cv::Point(i, j));
-			if(colour[0] != 255)
-				printf("colour at (%d, %d): (%f, %f, %f)\n", i, j, colour[0], colour[1], colour[2]);
+			map[i][j].pixel_space = cv::Vec2i(i, j);
+			map[i][j].world_space = get_world_coordinate(i, j, world_max_x, world_max_y);
 			// if colour is black
-			if(colour[0] && colour[1] && colour[2] < 50)
+			if(colour[0] < 50 && colour[1] < 50 && colour[2] < 50)
 			{
-				printf("Colour at (%d, %d) is black\n", i, j);
+				printf("Colour at (%d, %d) is black\n", map[i][j].pixel_space[0], map[i][j].pixel_space[1]);
+				map[i][j].blocked = true;
+			//	map.map[i, j] = 
 			}
 		}
 	}
+}
+
+
+// probably going to plan path in image (ooh,a nd need to add blocks as obstacles too, in the construct_map
+// loop), and then ... oh but maybe cause I'm doing the conversionn, don't need to
+// can just do the conversions, then plan in stage, and convert back to check if valid? Will need to test
+cv::Vec2f ReadMapModule::get_world_coordinate(int x, int y, float world_max_x, float world_max_y)
+{
+	
 }
