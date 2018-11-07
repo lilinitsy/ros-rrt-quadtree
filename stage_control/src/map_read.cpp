@@ -8,23 +8,25 @@ ReadMapModule::ReadMapModule()
 
 ReadMapModule::ReadMapModule(std::string map_path)
 {
-	read_map(map_path);
+	cv::Mat image = read_map(map_path);
 	construct_map();
 }
 
 
-void ReadMapModule::read_map(std::string map_path)
+cv::Mat ReadMapModule::read_map(std::string map_path)
 {
-	image = cv::imread(map_path, cv::IMREAD_COLOR);
+	cv::Mat image = cv::imread(map_path, cv::IMREAD_GRAYSCALE);
 
 	if(image.empty())
 	{
-
+		printf("Empty map\n");
 	}
+
+	return image;
 }
 
 
-void ReadMapModule::construct_map()
+void ReadMapModule::construct_map(cv::Mat image)
 {
-
+	*map = new Map[]
 }

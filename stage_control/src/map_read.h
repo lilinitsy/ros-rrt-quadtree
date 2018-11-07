@@ -5,15 +5,24 @@
 #include <opencv2/highgui.hpp>
 
 
+// 2D map structure
+// stores x and y
+// assign 1 if it's a valid point, 0 if not.
+struct Map
+{
+	int **map;
+};
+
+
 class ReadMapModule
 {
 	public:
-		cv::Mat image;
+		Map map;
 
 		ReadMapModule();
 		ReadMapModule(std::string map_path);
 
 	private:
-		void read_map(std::string map_path);
+		cv::Mat read_map(std::string map_path);
 		void construct_map();
 };
