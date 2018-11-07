@@ -27,11 +27,11 @@ void RobotController::pose_callback(const nav_msgs::Odometry::ConstPtr &o)
 	pose.position = o->pose.pose.position;
 }
 
-
+/*
 RRTNode *RobotController::pick_node()
 {
 
-}
+}*/
 
 
 bool RobotController::valid_point(geometry_msgs::Point p)

@@ -15,7 +15,7 @@ class RobotController
 		ros::Subscriber pose_subscriber;
 		LaserReader laser_reader;
 		geometry_msgs::Pose pose;
-		RRT rrt;
+		//RRT rrt;
 
 		RobotController();
 		void run();
@@ -25,6 +25,6 @@ class RobotController
 		void print_pose();
 
 		bool valid_point(geometry_msgs::Point p);
-		RRTNode *pick_node(); 
+		//RRTNode *pick_node(); 
 
 };

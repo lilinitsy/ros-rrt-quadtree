@@ -60,6 +60,7 @@ window
 )
 
 # load an environment bitmap
+# default bitmap is 809 x 689
 floorplan
 ( 
   name "autolab"
