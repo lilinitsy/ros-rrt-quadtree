@@ -24,5 +24,5 @@ class ReadMapModule
 
 	private:
 		cv::Mat read_map(std::string map_path);
-		void construct_map();
+		void construct_map(cv::Mat image);
 };

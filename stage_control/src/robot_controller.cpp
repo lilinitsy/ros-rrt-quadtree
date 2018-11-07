@@ -18,6 +18,8 @@ RobotController::RobotController()
 	velocity_publisher = node_handle.advertise<geometry_msgs::Twist>("cmd_vel", 1); // TODO: Look into this more
 	pose_subscriber = node_handle.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 60, &RobotController::pose_callback, this);
 	laser_reader = LaserReader();
+	//map = ReadMapModule("../../bitmaps/autolab.png");
+	map = ReadMapModule("src/a1_helpers/bitmaps/autolab.png");
 }
 
 
@@ -53,6 +55,6 @@ void RobotController::run()
 	{
 		ros::spinOnce();
 		// laser_reader.scan_world(); need a cmdline flag for this
-		print_pose();
+		// print_pose();
 	}
 }

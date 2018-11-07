@@ -5,6 +5,7 @@
 #include <std_msgs/String.h>
 
 #include "laser_reader.h"
+#include "map_read.h"
 #include "rrt.h"
 
 class RobotController
@@ -15,7 +16,9 @@ class RobotController
 		ros::Subscriber pose_subscriber;
 		LaserReader laser_reader;
 		geometry_msgs::Pose pose;
+
 		//RRT rrt;
+		ReadMapModule map;
 
 		RobotController();
 		void run();
