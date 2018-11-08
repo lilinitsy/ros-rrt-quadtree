@@ -22,10 +22,10 @@ class ReadMapModule
 		Map **map;
 
 		ReadMapModule();
-		ReadMapModule(std::string map_path, float world_max_x, float world_max_y); // don't fuck with 3D yeeeeeeet
+		ReadMapModule(std::string map_path, float world_max_x, float world_max_y, float pixels_to_meters); // don't fuck with 3D yeeeeeeet
 
 	private:
 		cv::Mat read_map(std::string map_path);
-		cv::Vec2f get_world_coordinate(int x, int y, float world_max_x, float world_max_y);
-		void construct_map(cv::Mat image, float world_max_x, float world_max_y);
+		cv::Vec2f get_world_coordinate(int x, int y, float world_max_x, float world_max_y, int pixel_rows, int pixel_cols, float pixels_to_meters);
+		void construct_map(cv::Mat image, float world_max_x, float world_max_y, float pixels_to_meters);
 };
