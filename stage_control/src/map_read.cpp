@@ -58,10 +58,7 @@ void ReadMapModule::construct_map(cv::Mat image, float world_max_x, float world_
 			{
 				for(unsigned int k = 0; i < obstacles.size(); i++)
 				{
-					int fudge = .1; // our robot is given in erratic as a pointrobot, but that's not practical, nor how it looks in stage. Add a fudge factor to fudgify.
-					//if(obstacles[k].position - obstacles[k].size)
-					// check uh, that there's overlap in robot position + fudge, and obstacle position - size
-					// also need to check if there's overlap in robot position - fudge and obstacle position + size
+					// check if the world_space coords overlap
 				}
 			}
 		}
