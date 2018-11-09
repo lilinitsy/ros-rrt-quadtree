@@ -2,6 +2,8 @@
 #include <sstream>
 
 #include <sensor_msgs/LaserScan.h>
+#include <geometry_msgs/Point32.h>
+#include <geometry_msgs/Pose2D.h>
 #include <geometry_msgs/Twist.h>
 
 
@@ -18,7 +20,8 @@ RobotController::RobotController()
 	velocity_publisher = node_handle.advertise<geometry_msgs::Twist>("cmd_vel", 1); // TODO: Look into this more
 	pose_subscriber = node_handle.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 60, &RobotController::pose_callback, this);
 	laser_reader = LaserReader();
-	map = ReadMapModule("src/ros-rrt-quadtree/bitmaps/autolab.png", 54.0f, 58.7f, 28.806f); // will need to change at some point to not be hardcoded... or parse the willow world file.
+	gather_obstacles();
+	map = ReadMapModule("src/ros-rrt-quadtree/bitmaps/autolab.png", 54.0f, 58.7f, 28.806f, obstacles); // will need to change at some point to not be hardcoded... or parse the willow world file.
 }
 
 
@@ -38,6 +41,14 @@ RRTNode *RobotController::pick_node()
 bool RobotController::valid_point(geometry_msgs::Point p)
 {
 
+}
+
+
+// TODO: Think of a cool way to get all obstacles
+void RobotController::gather_obstacles()
+{
+	// for now, hardcode
+	obstacles.push_back(Obstacle(cv::Vec3f(-13.924, 25.020, 0), cv::Vec3f(0.5f, 0.5f, 0.5f)));	
 }
 
 

@@ -2,13 +2,12 @@
 
 #include "map_read.h"
 
-
 ReadMapModule::ReadMapModule()
 {
 	// nothing to do
 }
 
-ReadMapModule::ReadMapModule(std::string map_path, float world_max_x, float world_max_y, float pixels_to_meters)
+ReadMapModule::ReadMapModule(std::string map_path, float world_max_x, float world_max_y, float pixels_to_meters, std::vector<Obstacle> obstacles)
 {
 	cv::Mat image = read_map(map_path);
 	
@@ -18,7 +17,7 @@ ReadMapModule::ReadMapModule(std::string map_path, float world_max_x, float worl
 		map[i] = new Map[image.rows];
 	}
 
-	construct_map(image, world_max_x, world_max_y, pixels_to_meters);
+	construct_map(image, world_max_x, world_max_y, pixels_to_meters, obstacles);
 }
 
 
@@ -36,7 +35,7 @@ cv::Mat ReadMapModule::read_map(std::string map_path)
 }
 
 
-void ReadMapModule::construct_map(cv::Mat image, float world_max_x, float world_max_y, float pixels_to_meters)
+void ReadMapModule::construct_map(cv::Mat image, float world_max_x, float world_max_y, float pixels_to_meters, std::vector<Obstacle> obstacles)
 {
 	for(int i = 0; i < image.cols; i++)
 	{
@@ -45,7 +44,8 @@ void ReadMapModule::construct_map(cv::Mat image, float world_max_x, float world_
 			cv::Scalar colour = image.at<uchar>(cv::Point(i, j));
 			map[i][j].pixel_space = cv::Vec2i(i, j);
 			map[i][j].world_space = get_world_coordinate(i, j, world_max_x, world_max_y, image.rows, image.cols, pixels_to_meters);
-			// if colour is black
+		
+			// if colour is blackish
 			if(colour[0] < 50 && colour[1] < 50 && colour[2] < 50)
 			{
 			//	printf("Colour at (%d, %d) is black\n", map[i][j].pixel_space[0], map[i][j].pixel_space[1]);
@@ -53,7 +53,17 @@ void ReadMapModule::construct_map(cv::Mat image, float world_max_x, float world_
 			//	map.map[i, j] = 
 			}
 
-			// block?
+			// test for blocks
+			else 
+			{
+				for(unsigned int k = 0; i < obstacles.size(); i++)
+				{
+					int fudge = .1; // our robot is given in erratic as a pointrobot, but that's not practical, nor how it looks in stage. Add a fudge factor to fudgify.
+					//if(obstacles[k].position - obstacles[k].size)
+					// check uh, that there's overlap in robot position + fudge, and obstacle position - size
+					// also need to check if there's overlap in robot position - fudge and obstacle position + size
+				}
+			}
 		}
 	}
 }

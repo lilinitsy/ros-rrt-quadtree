@@ -1,6 +1,7 @@
 #ifndef ROBOT_CONTROLLER_H
 #define ROBOT_CONTROLLER_H
 
+#include <vector>
 
 #include <ros/ros.h>
 
@@ -10,6 +11,7 @@
 
 #include "laser_reader.h"
 #include "map_read.h"
+#include "obstacle.h"
 #include "rrt.h"
 
 class RobotController
@@ -20,16 +22,19 @@ class RobotController
 		ros::Subscriber pose_subscriber;
 		LaserReader laser_reader;
 		geometry_msgs::Pose pose;
+		std::vector<Obstacle> obstacles;
 
 		//RRT rrt;
 		ReadMapModule map;
 
 		RobotController();
+
 		void run();
 
 	private:
 		void pose_callback(const nav_msgs::Odometry::ConstPtr &o);
 		void print_pose();
+		void gather_obstacles();
 
 		bool valid_point(geometry_msgs::Point p);
 		//RRTNode *pick_node(); 
