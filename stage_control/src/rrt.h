@@ -1,3 +1,7 @@
+#ifndef RRT_H
+#define RRT_H
+
+
 #include <vector>
 
 
@@ -24,3 +28,6 @@ class RRT
             // well anyway, after that, add those children to this nodes vector.
 
 };
+
+
+#endif

@@ -1,3 +1,7 @@
+#ifndef RRT_NODE_H
+#define RRT_NODE_H
+
+
 #include <vector>
 
 #include <ros/ros.h>
@@ -15,3 +19,6 @@ class RRTNode
         RRTNode();
 
 };
+
+
+#endif

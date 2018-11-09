@@ -1,3 +1,7 @@
+#ifndef ROBOT_CONTROLLER_H
+#define ROBOT_CONTROLLER_H
+
+
 #include <ros/ros.h>
 
 #include <geometry_msgs/Point.h>
@@ -31,3 +35,6 @@ class RobotController
 		//RRTNode *pick_node(); 
 
 };
+
+
+#endif

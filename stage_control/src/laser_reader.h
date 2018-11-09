@@ -1,3 +1,7 @@
+#ifndef LASER_READER_H
+#define LASER_READER_H
+
+
 #include <ros/ros.h>
 
 #include <sensor_msgs/LaserScan.h>
@@ -26,3 +30,6 @@ class LaserReader
 		float closest_collision(int num_readings); // may be defunct
 
 };
+
+
+#endif

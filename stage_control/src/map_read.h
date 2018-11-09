@@ -1,3 +1,7 @@
+#ifndef MAP_READ_H
+#define MAP_READ_H
+
+
 #include <string>
 
 #include <opencv2/core/core.hpp>
@@ -29,3 +33,6 @@ class ReadMapModule
 		cv::Vec2f get_world_coordinate(int x, int y, float world_max_x, float world_max_y, int pixel_rows, int pixel_cols, float pixels_to_meters);
 		void construct_map(cv::Mat image, float world_max_x, float world_max_y, float pixels_to_meters);
 };
+
+
+#endif
