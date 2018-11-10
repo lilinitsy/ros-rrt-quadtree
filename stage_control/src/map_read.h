@@ -26,6 +26,7 @@ class ReadMapModule
 {
 	public:
 		Map **map;
+		cv::Vec2i max_pixels;
 
 		ReadMapModule();
 		ReadMapModule(std::string map_path, float world_max_x, float world_max_y, float pixels_to_meters, std::vector<Obstacle> obstacles); // don't fuck with 3D yeeeeeeet

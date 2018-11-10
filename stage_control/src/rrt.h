@@ -18,6 +18,8 @@ class RRT
 {
     public:
         std::vector<RRTNode*> nodes;
+        geometry_msgs::Point  goal;
+        bool goal_reached = false;
 
         RRT();
         void extend(geometry_msgs::Point point);

@@ -18,7 +18,7 @@ try subscribing to /map?
 RobotController::RobotController()
 {
 	velocity_publisher = node_handle.advertise<geometry_msgs::Twist>("cmd_vel", 1); // TODO: Look into this more
-	pose_subscriber = node_handle.subscribe<nav_msgs::Odometry>("base_pose_ground_truth", 60, &RobotController::pose_callback, this);
+	pose_subscriber = node_handle.subscribe<nav_msgs::Odometry>("odom", 60, &RobotController::pose_callback, this);
 	laser_reader = LaserReader();
 	gather_obstacles();
 	map = ReadMapModule("src/ros-rrt-quadtree/bitmaps/autolab.png", 54.0f, 58.7f, 28.806f, obstacles); // will need to change at some point to not be hardcoded... or parse the willow world file.
@@ -31,11 +31,19 @@ void RobotController::pose_callback(const nav_msgs::Odometry::ConstPtr &o)
 	pose.position = o->pose.pose.position;
 }
 
-/*
+
 RRTNode *RobotController::pick_node()
 {
+	float x = static_cast<float>(rand()) / 
+		static_cast<float>(RAND_MAX / 
+			(map.map[map.max_pixels.val[0]][map.max_pixels.val[1]].world_space.val[0] - map.map[0][0].world_space.val[0]));
 
-}*/
+	float y = static_cast<float>(rand()) / 
+		static_cast<float>(RAND_MAX / 
+			(map.map[map.max_pixels.val[0]][map.max_pixels.val[1]].world_space.val[1] - map.map[0][0].world_space.val[1]));
+
+	float z = 0;
+}
 
 
 bool RobotController::valid_point(geometry_msgs::Point p)
@@ -60,11 +68,16 @@ void RobotController::print_pose()
 
 void RobotController::run()
 {
-	ros::Rate rate(10);
+	ros::Rate rate(1);
 	while(ros::ok())
 	{
 		ros::spinOnce();
+		print_pose();
+	//	while(!rrt.goal_reached)
+	//	{
+	//		pick_node();
+	//	}
+
 		// laser_reader.scan_world(); need a cmdline flag for this
-		// print_pose();
 	}
 }

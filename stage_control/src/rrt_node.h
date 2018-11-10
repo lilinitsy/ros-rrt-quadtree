@@ -6,18 +6,17 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/Point.h>
-#include <geometry_msgs/Pose.h>
 
 
 
 class RRTNode
 {
     public:
-        geometry_msgs::Pose pose;
+        geometry_msgs::Point position;
         std::vector<RRTNode*> children;
 
         RRTNode();
-
+        RRTNode(geometry_msgs::Point p);
 };
 
 

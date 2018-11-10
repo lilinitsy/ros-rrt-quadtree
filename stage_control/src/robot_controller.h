@@ -24,7 +24,8 @@ class RobotController
 		geometry_msgs::Pose pose;
 		std::vector<Obstacle> obstacles;
 
-		//RRT rrt;
+
+		RRT rrt;
 		ReadMapModule map;
 
 		RobotController();
@@ -37,7 +38,7 @@ class RobotController
 		void gather_obstacles();
 
 		bool valid_point(geometry_msgs::Point p);
-		//RRTNode *pick_node(); 
+		RRTNode *pick_node(); 
 
 };
 
