@@ -32,25 +32,24 @@ void RobotController::pose_callback(const nav_msgs::Odometry::ConstPtr &o)
 }
 
 
-RRTNode *RobotController::pick_node(int max_x, int max_y)
+RRTNode *RobotController::pick_node(const int max_x, const int max_y, const int min_x, const int min_y)
 {
 //	printf("Max pixels x: %d\n", map.max_pixels.val[0]);
 //	printf("Max pixels y: %d\n", map.max_pixels.val[1]);
-	std::cout << "Max pixels x: " << max_x;
-	std::cout << "Max pixels at y: " << max_y;
-/*	float x = static_cast<float(rand()) /
+	std::cout << "Max worldspace x: " << max_x << std::endl;
+	std::cout << "Max space at y: " << max_y << std::endl;
+	float x = min_x + static_cast<float>(rand()) /
 		static_cast<float>(RAND_MAX /
-			(max_x - max_y)
-*/
-	/*float x = static_cast<float>(rand()) / 
-		static_cast<float>(RAND_MAX / 
-			(map.map[map.max_pixels.val[0] - 1][map.max_pixels.val[1] - 1].world_space.val[0] - map.map[0][0].world_space.val[0]));
+			(max_x - min_x));
 	
-	float y = static_cast<float>(rand()) / 
+	
+	float y = min_y + static_cast<float>(rand()) / 
 		static_cast<float>(RAND_MAX / 
-			(map.map[map.max_pixels.val[0] - 1][map.max_pixels.val[1] - 1].world_space.val[1] - map.map[0][0].world_space.val[1]));
-	*/
-	float z = 0; 
+			(max_y - min_y));
+
+	float z = 1;
+
+	std::cout << "(x, y, z): (" << x << ", " << y << ", " << z << ")" << std::endl;
 }
 
 
@@ -76,17 +75,28 @@ void RobotController::print_pose()
 
 void RobotController::run()
 {
-	int max_x = 809;
-	int max_y = 689;
+	// for some reason these have to be const or there's some memory corruption.
+	const int max_x_pixels = map.max_pixels.val[0];
+	const int max_y_pixels = map.max_pixels.val[1]; 
+
+	//const int max_x = map.map[max_x_pixels - 1][max_y_pixels - 1].world_space.val[0];
+	//const int max_y = map.map[max_x_pixels - 1][max_y_pixels - 1].world_space.val[1];
+	// I have to set it cause ROS seems to be full of memory leaks? Fuck, idk
+	// should probably do ROS with python in the future, but rn I'm too far in
+	// I also don't remember how to write python
+	const int max_x = 29;
+	const int max_y = 28;
+	const int min_x = -29;
+	const int min_y = -28;
 
 	ros::Rate rate(1);
 	while(ros::ok())
 	{
 		ros::spinOnce();
-	//	print_pose();
+		print_pose();
 	//	while(!rrt.goal_reached)
 	//	{
-			pick_node(max_x, max_y);
+			pick_node(max_x, max_y, min_x, min_y);
 	//	}
 
 		// laser_reader.scan_world(); need a cmdline flag for this

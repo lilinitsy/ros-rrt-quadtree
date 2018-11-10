@@ -38,7 +38,7 @@ class RobotController
 		void gather_obstacles();
 
 		bool valid_point(geometry_msgs::Point p);
-		RRTNode *pick_node(int max_x, int max_y); 
+		RRTNode *pick_node(int max_x, int max_y, int min_x, int min_y); 
 
 };
 
