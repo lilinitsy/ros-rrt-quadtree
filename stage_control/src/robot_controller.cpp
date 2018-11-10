@@ -32,17 +32,25 @@ void RobotController::pose_callback(const nav_msgs::Odometry::ConstPtr &o)
 }
 
 
-RRTNode *RobotController::pick_node()
+RRTNode *RobotController::pick_node(int max_x, int max_y)
 {
-	float x = static_cast<float>(rand()) / 
+//	printf("Max pixels x: %d\n", map.max_pixels.val[0]);
+//	printf("Max pixels y: %d\n", map.max_pixels.val[1]);
+	std::cout << "Max pixels x: " << max_x;
+	std::cout << "Max pixels at y: " << max_y;
+/*	float x = static_cast<float(rand()) /
+		static_cast<float>(RAND_MAX /
+			(max_x - max_y)
+*/
+	/*float x = static_cast<float>(rand()) / 
 		static_cast<float>(RAND_MAX / 
-			(map.map[map.max_pixels.val[0]][map.max_pixels.val[1]].world_space.val[0] - map.map[0][0].world_space.val[0]));
-
+			(map.map[map.max_pixels.val[0] - 1][map.max_pixels.val[1] - 1].world_space.val[0] - map.map[0][0].world_space.val[0]));
+	
 	float y = static_cast<float>(rand()) / 
 		static_cast<float>(RAND_MAX / 
-			(map.map[map.max_pixels.val[0]][map.max_pixels.val[1]].world_space.val[1] - map.map[0][0].world_space.val[1]));
-
-	float z = 0;
+			(map.map[map.max_pixels.val[0] - 1][map.max_pixels.val[1] - 1].world_space.val[1] - map.map[0][0].world_space.val[1]));
+	*/
+	float z = 0; 
 }
 
 
@@ -68,14 +76,17 @@ void RobotController::print_pose()
 
 void RobotController::run()
 {
+	int max_x = 809;
+	int max_y = 689;
+
 	ros::Rate rate(1);
 	while(ros::ok())
 	{
 		ros::spinOnce();
-		print_pose();
+	//	print_pose();
 	//	while(!rrt.goal_reached)
 	//	{
-	//		pick_node();
+			pick_node(max_x, max_y);
 	//	}
 
 		// laser_reader.scan_world(); need a cmdline flag for this
