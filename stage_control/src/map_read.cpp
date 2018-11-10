@@ -68,45 +68,13 @@ void ReadMapModule::construct_map(cv::Mat image, float world_max_x, float world_
 			
 					if(x_overlap_left_edge && x_overlap_right_edge && y_overlap_bottom_edge && y_overlap_top_edge)
 					{
+						map[i][j].blocked = true;
 						printf("TRUE\n");
-					}
-
-					if(x_overlap_left_edge)
-					{
-						printf("%d, %d: x_overlap_left_edge\n", i, j);
-					}
-
-					if(x_overlap_right_edge)
-					{
-						printf("%d, %d: x_overlap_right_edge\n", i, j);
-					}
-
-					if(y_overlap_bottom_edge)
-					{
-						printf("%d, %d: y_overlap_bottom_edge\n", i, j);
-					}
-
-					if(y_overlap_top_edge)
-					{
-						printf("%d, %d: y_overlap_top_edge\n", i, j);
 					}
 				}
 			}
 		}
 	}
-
-	/*
-	for(int i = 0; i < image.cols; i++)
-	{
-		for(int j = 0; j < image.rows; j++)
-		{
-			printf("pixel space: (%d, %d)\tworld space: (%f, %f)\n", map[i][j].pixel_space[0], map[i][j].pixel_space[1], map[i][j].world_space[0], map[i][j].world_space[1]);
-		}
-	}
-
-
-	std::cout << "px, py: " << "5" << " " << "5" << "\tworld_x, world_y: " << map[5][5].world_space.val[0] << " " << map[5][5].world_space.val[1] << std::endl;
-	*/
 }
 
 
@@ -122,19 +90,22 @@ cv::Vec2f ReadMapModule::get_world_coordinate(int x, int y, float world_max_x, f
 	float real_world_min_x = -1.0f * real_world_max_x;
 	float real_world_min_y = -1.0f * real_world_max_y;
 
-	
-
-	// x pixel corresponds to negative world
 	float world_x = ((float) x / (0.5f * (float) pixel_cols)) * pixels_to_meters + real_world_min_x;
 	float world_y = ((float) y / (0.5f * (float) pixel_rows)) * pixels_to_meters + real_world_min_y;
-	
-	
-	// test case
-	if(x == 0 && y == 0)
-	{
-	//	std::cout << "x, y: " << x << " " << y << "\tworld_x, world_y: " << world_x << " " << world_y << std::endl;
-	}
-	//printf("pixel: %f %f, world: %f %f\n", x, y, world_x, world_y);
 
 	return cv::Vec2f(world_x, world_y);
+}
+
+
+cv::Vec2i get_pixel_coordinates(float world_x, float world_y, float world_max_x, float world_max_y, int pixel_rows, int pixel_cols, float pixels_to_meters)
+{
+	float real_world_max_x = world_max_x / 2.0f;
+	float real_world_max_y = world_max_y / 2.0f;
+	float real_world_min_x = -1.0f * real_world_max_x;
+	float real_world_min_y = -1.0f * real_world_max_y;
+
+	int pixel_x = 2 * pixel_cols * pixels_to_meters * (world_x - real_world_min_x);
+	int pixel_y = 2 * pixel_rows * pixels_to_meters * (world_y - real_world_min_y);
+
+	return cv::Vec2i(pixel_x, pixel_y);
 }

@@ -34,29 +34,25 @@ void RobotController::pose_callback(const nav_msgs::Odometry::ConstPtr &o)
 
 RRTNode *RobotController::pick_node(const int max_x, const int max_y, const int min_x, const int min_y)
 {
-//	printf("Max pixels x: %d\n", map.max_pixels.val[0]);
-//	printf("Max pixels y: %d\n", map.max_pixels.val[1]);
-	std::cout << "Max worldspace x: " << max_x << std::endl;
-	std::cout << "Max space at y: " << max_y << std::endl;
-	float x = min_x + static_cast<float>(rand()) /
-		static_cast<float>(RAND_MAX /
-			(max_x - min_x));
-	
-	
-	float y = min_y + static_cast<float>(rand()) / 
-		static_cast<float>(RAND_MAX / 
-			(max_y - min_y));
+	geometry_msgs::Point point;
 
-	float z = 1;
+	do
+	{
+		float x = min_x + static_cast<float>(rand()) /
+			static_cast<float>(RAND_MAX / (max_x - min_x));
+		float y = min_y + static_cast<float>(rand()) / 
+			static_cast<float>(RAND_MAX / (max_y - min_y));
+		float z = 1;
+		point.x = x;
+		point.y = y;
+		point.z = z;
 
-	std::cout << "(x, y, z): (" << x << ", " << y << ", " << z << ")" << std::endl;
+	} while(!rrt.valid_point(point, pose.position, map));
+
+	return new RRTNode(point);
 }
 
 
-bool RobotController::valid_point(geometry_msgs::Point p)
-{
-
-}
 
 
 // TODO: Think of a cool way to get all obstacles
@@ -79,9 +75,7 @@ void RobotController::run()
 	const int max_x_pixels = map.max_pixels.val[0];
 	const int max_y_pixels = map.max_pixels.val[1]; 
 
-	//const int max_x = map.map[max_x_pixels - 1][max_y_pixels - 1].world_space.val[0];
-	//const int max_y = map.map[max_x_pixels - 1][max_y_pixels - 1].world_space.val[1];
-	// I have to set it cause ROS seems to be full of memory leaks? Fuck, idk
+	// I have to set it const and manually cause ROS seems to be full of memory leaks? Fuck, idk
 	// should probably do ROS with python in the future, but rn I'm too far in
 	// I also don't remember how to write python
 	const int max_x = 29;
@@ -93,10 +87,11 @@ void RobotController::run()
 	while(ros::ok())
 	{
 		ros::spinOnce();
-		print_pose();
+		//print_pose();
 	//	while(!rrt.goal_reached)
 	//	{
-			pick_node(max_x, max_y, min_x, min_y);
+		RRTNode *node =	pick_node(max_x, max_y, min_x, min_y);
+
 	//	}
 
 		// laser_reader.scan_world(); need a cmdline flag for this
