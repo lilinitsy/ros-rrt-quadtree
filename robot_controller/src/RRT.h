@@ -10,11 +10,22 @@
 
 #include "RRTNode.h"
 
+
+
+enum RRTStatus
+{
+    TRAPPED,
+    EXTENDED,
+    REACHED
+};
+
+
 class RRT
 {
     public:
         std::vector<RRTNode*> nodes;
         cv::Vec2i goal;
+
 
         RRT();
         /*
@@ -24,10 +35,12 @@ class RRT
                 so just use valid_point to check if the point innit blocked
                 COOL
         */
-        void extend(cv::Vec2i point);
-        void add_node(RRTNode *node);
+        void build_rrt(cv::Vec2i start);
 
-        bool valid_point(cv::Vec2i point,)
+    private:
+        RRTStatus extend(cv::Vec2i point);
+        void add_node(RRTNode *node);
+        bool valid_point(cv::Vec2i point);
 };
 
 
