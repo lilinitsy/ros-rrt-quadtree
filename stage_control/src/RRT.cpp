@@ -22,6 +22,8 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 	{
 		// sample within a range of centre + stepsize * iterations
 		// and then have a 10% chance the goal node is picked.
+		int random_choice = rand() % 10;
+
 		for(int i = 0; i < iterations; i++)
 		{
 
