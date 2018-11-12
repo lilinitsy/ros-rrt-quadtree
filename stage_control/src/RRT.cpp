@@ -25,7 +25,7 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 		// sample within a range of centre + stepsize * iterations
 		// and then have a 10% chance the goal node is picked.
 		int random_choice = rand() % 20;
-		printf("Random choice: %d\n", random_choice);
+		//printf("Random choice: %d\n", random_choice);
 
 		cv::Vec2i local_goal_position;
 		// 10% chance we choose the goal as the node we want to try to reach
@@ -36,7 +36,7 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 
 		else
 		{
-			local_goal_position = pick_local_goal_position(start, iterations);
+			local_goal_position = pick_local_goal_position(start, iterations, map);
 		}
 
 		for(int i = 0; i < iterations; i++)
@@ -151,6 +151,7 @@ bool RRT::valid_point(cv::Vec2i point, ReadMapModule map)
 {
 	int i = point.val[0];
 	int j = point.val[1];
+	printf("point.val[0]: %d\tpoint.val[1]: %d\n", i, j);
 	return map.map[i][j].blocked;
 }
 
@@ -187,14 +188,33 @@ void RRT::remove_from_leaf_list(RRTNode *node)
 }
 
 
-cv::Vec2i RRT::pick_local_goal_position(cv::Vec2i start, int iterations)
+cv::Vec2i RRT::pick_local_goal_position(cv::Vec2i start, int iterations, ReadMapModule map)
 {
 	int xmin = start.val[0] - step_size * iterations;
 	int xmax = start.val[0] + step_size * iterations;
 	int ymin = start.val[1] - step_size * iterations;
 	int ymax = start.val[1] + step_size * iterations;
 
+	if(xmin < 0)
+	{
+		xmin = 0;
+	}
+	if(ymin < 0)
+	{
+		ymin = 0;
+	}
+	if(xmax >= map.max_pixels.val[0])
+	{
+		xmax = map.max_pixels.val[0] - 1;
+	}
+	if(ymax >= map.max_pixels.val[0])
+	{
+		ymax = map.max_pixels.val[0] - 1;
+	}
+
 	int x_pos = rand() % (xmax - xmin + 1) + xmin;
 	int y_pos = rand() % (ymax - ymin + 1) + ymin;
+	printf("X_POS: %d\n", x_pos);
+	printf("Y_POS: %d\n", y_pos);
 	return cv::Vec2i(x_pos, y_pos);
 }

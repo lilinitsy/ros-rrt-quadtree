@@ -53,7 +53,7 @@ class RRT
         bool goal_found();    
         unsigned int get_closest_node_to_point(cv::Vec2i point);
         float distance(cv::Vec2i a, cv::Vec2i b);
-        cv::Vec2i pick_local_goal_position(cv::Vec2i start, int iterations); // search from leaf nodes
+        cv::Vec2i pick_local_goal_position(cv::Vec2i start, int iterations, ReadMapModule map); // search from leaf nodes
 };
 
 

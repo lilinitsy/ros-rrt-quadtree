@@ -29,7 +29,8 @@ void Robot::run()
 {
 	ros::Rate rate(1);
 	cv::Vec2i position = cv::Vec2i(pose.position.x, pose.position.y);
-	rrt = RRT(position, 3); // step size 3 pixels
+	cv::Vec2i goal_position = cv::Vec2i(586, 458);
+	rrt = RRT(goal_position, 3); // step size 3 pixels
 	rrt.build_rrt(position, map, 10);
 	printf("RRT built\n");
 	printf("RRT nodes size: %lu\n", rrt.nodes.size());
