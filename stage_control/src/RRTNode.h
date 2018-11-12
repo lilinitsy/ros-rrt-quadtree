@@ -11,7 +11,7 @@
 struct RRTNode
 {
     cv::Vec2i position;
-    std::vector<RRNode*> children;
+    std::vector<RRTNode*> children;
 
     RRTNode();
     RRTNode(cv::Vec2i p);

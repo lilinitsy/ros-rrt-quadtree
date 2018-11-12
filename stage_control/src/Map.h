@@ -12,7 +12,7 @@ struct Map
 {
 	cv::Vec2i pixel_space;
 	cv::Vec2f world_space;
-	bool blocked;
+	bool blocked = false;
 };
 
 
@@ -28,6 +28,7 @@ class ReadMapModule
 
 	private:
 		cv::Mat read_map(std::string path);
+		cv::Vec2f get_world_coordinates(int x, int y, float pixels_to_meters, int pixel_cols, int pixel_rows);
 	//	cv::Vec2f get_world_coordinate(int x, int y, float world_max_x, float world_max_y, int pixel_rows, int pixel_cols, float pixels_to_meters);
 		void construct_map(cv::Mat image); // ignore blocks for now
 };
