@@ -143,6 +143,7 @@ add_executable(rrtplanner src/RRTPlanner.cpp
                           src/Map.cpp
                           src/RRTNode.cpp
                           src/RRT.cpp
+                          src/Robot.cpp
 )
 
 ## Rename C++ executable without prefix

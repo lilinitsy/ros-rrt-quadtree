@@ -19,7 +19,8 @@ enum RRTStatus
 {
     TRAPPED,
     EXTENDED,
-    REACHED
+    REACHED,
+    GOAL_REACHED
 };
 
 
@@ -27,6 +28,7 @@ class RRT
 {
     public:
         std::vector<RRTNode*> nodes;
+        std::vector<RRTNode*> leaf_nodes;
         cv::Vec2i goal;
         int step_size;
 
@@ -41,15 +43,18 @@ class RRT
                 so just use valid_point to check if the point innit blocked
                 COOL
         */
-        void build_rrt(cv::Vec2i start, ReadMapModule map);
+        void build_rrt(cv::Vec2i start, ReadMapModule map, int iterations);
 
     private:
         RRTStatus extend(cv::Vec2i local_goal, RRTNode *current_node, ReadMapModule map);
         void add_node(RRTNode *node);
+        void remove_from_leaf_list(RRTNode *node);
         bool valid_point(cv::Vec2i point, ReadMapModule map);
+        bool goal_found();    
         unsigned int get_closest_node_to_point(cv::Vec2i point);
         float distance(cv::Vec2i a, cv::Vec2i b);
-        bool goal_found();
+        cv::Vec2i pick_local_goal_position(); // search from leaf nodes
+
 };
 
 
