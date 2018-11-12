@@ -16,9 +16,9 @@ RRT::RRT(cv::Vec2i g, int sz)
 void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 {
 	srand(37);
-	RRTNode *start_node = new RRTNode(start);
-	nodes.push_back(start_node);
-	leaf_nodes.push_back(start_node);
+	RRTNode *begin_node = new RRTNode(start);
+	nodes.push_back(begin_node);
+	leaf_nodes.push_back(begin_node);
 
 	while(!goal_found())
 	{
@@ -27,21 +27,24 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 		int random_choice = rand() % 20;
 		printf("Random choice: %d\n", random_choice);
 
-		RRTNode *goal_node;
+		cv::Vec2i local_goal_position;
 		// 10% chance we choose the goal as the node we want to try to reach
 		if(random_choice > 17 || distance(start, goal) < step_size * iterations)
 		{
-			goal_node = new RRTNode(goal);
+			local_goal_position = goal;
 		}
 
 		else
 		{
-
+			local_goal_position = pick_local_goal_position(start, iterations);
 		}
 
 		for(int i = 0; i < iterations; i++)
 		{
 		//	RRTStatus status = RRT::extend
+			unsigned int closest_node = get_closest_node_to_point(local_goal_position);
+			RRTStatus status = extend(local_goal_position, nodes[closest_node], map);
+			printf("i: %d\n", i);
 		}
 	}
 }
@@ -181,4 +184,17 @@ void RRT::remove_from_leaf_list(RRTNode *node)
 			leaf_nodes.erase(leaf_nodes.begin() + i);
 		}
 	}
+}
+
+
+cv::Vec2i RRT::pick_local_goal_position(cv::Vec2i start, int iterations)
+{
+	int xmin = start.val[0] - step_size * iterations;
+	int xmax = start.val[0] + step_size * iterations;
+	int ymin = start.val[1] - step_size * iterations;
+	int ymax = start.val[1] + step_size * iterations;
+
+	int x_pos = rand() % (xmax - xmin + 1) + xmin;
+	int y_pos = rand() % (ymax - ymin + 1) + ymin;
+	return cv::Vec2i(x_pos, y_pos);
 }

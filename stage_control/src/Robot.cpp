@@ -14,7 +14,7 @@ Robot::Robot()
 {
 	velocity_publisher = node_handle.advertise<geometry_msgs::Twist>("cmd_vel", 1); // TODO: Look into this more
 	pose_subscriber = node_handle.subscribe<nav_msgs::Odometry>("odom", 60, &Robot::pose_callback, this);
-	map = ReadMapModule("src/ros-rrt-quadtree/bitmaps/autolab.png");
+	map = ReadMapModule("src/a1_helpers/bitmaps/autolab.png");
 }
 
 
@@ -32,6 +32,7 @@ void Robot::run()
 	rrt = RRT(position, 3); // step size 3 pixels
 	rrt.build_rrt(position, map, 10);
 	printf("RRT built\n");
+	printf("RRT nodes size: %lu\n", rrt.nodes.size());
 	while(ros::ok())
 	{
 		ros::spinOnce();
