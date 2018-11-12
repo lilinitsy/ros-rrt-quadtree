@@ -47,7 +47,7 @@ class RRT
 
     private:
         RRTStatus extend(cv::Vec2i local_goal, RRTNode *current_node, ReadMapModule map);
-        void add_node(RRTNode *node);
+        void add_node(RRTNode *node); // useless?
         void remove_from_leaf_list(RRTNode *node);
         bool valid_point(cv::Vec2i point, ReadMapModule map);
         bool goal_found();    

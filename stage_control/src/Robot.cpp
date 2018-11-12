@@ -15,7 +15,6 @@ Robot::Robot()
 	velocity_publisher = node_handle.advertise<geometry_msgs::Twist>("cmd_vel", 1); // TODO: Look into this more
 	pose_subscriber = node_handle.subscribe<nav_msgs::Odometry>("odom", 60, &Robot::pose_callback, this);
 	map = ReadMapModule("src/ros-rrt-quadtree/bitmaps/autolab.png");
-
 }
 
 
@@ -30,7 +29,7 @@ void Robot::run()
 {
 	ros::Rate rate(1);
 	cv::Vec2i position = cv::Vec2i(pose.position.x, pose.position.y);
-
+	rrt = RRT(position, 3); // step size 3 pixels
 	rrt.build_rrt(position, map, 10);
 	printf("RRT built\n");
 	while(ros::ok())

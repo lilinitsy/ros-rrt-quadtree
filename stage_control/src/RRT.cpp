@@ -17,16 +17,31 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 {
 	srand(37);
 	RRTNode *start_node = new RRTNode(start);
+	nodes.push_back(start_node);
+	leaf_nodes.push_back(start_node);
 
 	while(!goal_found())
 	{
 		// sample within a range of centre + stepsize * iterations
 		// and then have a 10% chance the goal node is picked.
-		int random_choice = rand() % 10;
+		int random_choice = rand() % 20;
+		printf("Random choice: %d\n", random_choice);
+
+		RRTNode *goal_node;
+		// 10% chance we choose the goal as the node we want to try to reach
+		if(random_choice > 17 || distance(start, goal) < step_size * iterations)
+		{
+			goal_node = new RRTNode(goal);
+		}
+
+		else
+		{
+
+		}
 
 		for(int i = 0; i < iterations; i++)
 		{
-
+		//	RRTStatus status = RRT::extend
 		}
 	}
 }
