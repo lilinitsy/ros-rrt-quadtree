@@ -59,6 +59,9 @@ class RRT
         float make_non_negative(cv::Vec2f vect);
 
         cv::Vec2f lerp(cv::Vec2i vec);
+
+
+        bool call_hacky_workaround(cv::Vec2i begin_pos, cv::Vec2i goal);        
 };
 
 
