@@ -38,7 +38,8 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 
 		else
 		{
-			local_goal_position = pick_local_goal_position_global_version(map);
+		//	local_goal_position = pick_local_goal_position_global_version(map);
+			local_goal_position = pick_local_goal_position(nodes[nodes.size() - 1]->position, iterations, map);
 		}
 
 		unsigned int closest_node = get_closest_node_to_point(local_goal_position);
@@ -52,20 +53,21 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 
 RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMapModule map, int iterations)
 {
-// MIGHT HAVE TO DO RECURSIVELY WITH iterations == 0?	
-	/*
-		First check if we've reached the global goal
-			- if so, return GOAL_REACHED to stop building
-				(TODO: Add a parameter to keep building 'for a while" after)
-	*/
-
 	printf("ITERATIONS: %d\n", iterations);
 
+	// ITERATED AS MUCH AS WE WANT
 	if(iterations == 0)
 	{
 		return EXTENDED;
 	}
 
+	// POINT IS IN A WALL
+	if(!valid_point(local_goal, map))
+	{	
+		return TRAPPED;
+	}
+
+	// WE CAN JUST GO TO THE GLOBAL GOAL
 	if(distance(current_node->position, goal) <= step_size)
 	{
 		RRTNode *global_goal_node = new RRTNode(goal);
@@ -81,14 +83,22 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 		return GOAL_REACHED;
 	}
 
-	// POINT IS IN A WALL
-	if(!valid_point(local_goal, map))
-	{	
+	// TYPICAL EXTENSION: Try taking another step
+	cv::Vec2f unit_direction_vector = cv::normalize((cv::Vec2f) current_node->position - (cv::Vec2f) local_goal);
+	cv::Vec2i next_position = (cv::Vec2f) current_node->position + step_size * unit_direction_vector;
+	next_position = lerp(next_position);
+
+	printf("\tLOCAL GOAL: %d %d\n", local_goal.val[0], local_goal.val[1]);
+	printf("\tCURRENT NODE: %d %d\n", current_node->position.val[0], current_node->position.val[1]);
+	printf("\tNEXT POSITION %d %d\n", next_position.val[0], next_position.val[1]);
+
+	// EXTENSION NODE IS INVALID -> TRAPPED
+	if(!valid_point(next_position, map))
+	{
 		return TRAPPED;
 	}
 
-	cv::Vec2f unit_direction_vector = cv::normalize((cv::Vec2f) current_node->position - (cv::Vec2f) local_goal);
-
+	// CAN TOUCH THE LOCAL GOAL -> REACHED
 	if(distance(current_node->position, local_goal) <= step_size)
 	{
 		RRTNode *local_goal_node = new RRTNode(local_goal);
@@ -104,18 +114,8 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 		return REACHED;
 	}
 
-
-	//cv::Vec2i next_position = lerp((cv::Vec2f) current_node->position + step_size * unit_direction_vector);
-	cv::Vec2i next_position = (cv::Vec2f) current_node->position + step_size * unit_direction_vector;
-	next_position = lerp(next_position);
-
-	// EXTENSION NODE IS INVALID -> TRAPPED
-	if(!valid_point(next_position, map))
-	{
-		return TRAPPED;
-	}
-
-	// CAN EXTEND
+	// CAN'T TOUCH LOCAL GOAL, BUT NEXT STEP IS VALID
+	// EXTEND
 	RRTNode *next_node = new RRTNode(next_position);
 	
 	if(current_node->children.size() > 0)

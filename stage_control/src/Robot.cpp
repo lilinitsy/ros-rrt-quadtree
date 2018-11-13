@@ -34,11 +34,12 @@ void Robot::run()
 	cv::Vec2i pixel_position = map.get_pixel_coordinates(pose.position.x, pose.position.y, 689, 809, 28.808f);
 	cv::Vec2i goal_position = cv::Vec2i(586, 458);
 
-	printf("pixel_position: %d %d\n", pixel_position.val[0], pixel_position.val[1]);
 	rrt = RRT(goal_position, 3); // step size 3 pixels
 	rrt.build_rrt(pixel_position, map, 10);
 	printf("RRT built\n");
 	printf("RRT nodes size: %lu\n", rrt.nodes.size());
+		printf("pixel_position: %d %d\n", pixel_position.val[0], pixel_position.val[1]);
+
 	write_image(689, 809);
 /*	while(ros::ok())
 	{
@@ -49,6 +50,7 @@ void Robot::run()
 void Robot::write_image(int rows, int columns)
 {
 	cv::Mat output = cv::Mat::zeros(rows, columns, CV_8UC3);
+	cv::Mat image = cv::imread("src/ros-rrt-quadtree/bitmaps/autolab.png", cv::IMREAD_COLOR);
 
 	for(unsigned int i = 0; i < rrt.nodes.size(); i++)
 	{
@@ -57,7 +59,9 @@ void Robot::write_image(int rows, int columns)
 			cv::line(output, rrt.nodes[i]->position, rrt.nodes[i]->children[j]->position, cv::Scalar(255, 255, 0));
 		}
 	}
+
+	output.copyTo(image);
 	cv::namedWindow("Graph", CV_WINDOW_AUTOSIZE);
-	cv::imshow("Graph", output);
+	cv::imshow("Graph", image);
 	cv::waitKey(0);
 }
