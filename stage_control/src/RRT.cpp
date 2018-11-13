@@ -55,6 +55,10 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 			// MAYBE HAVE TO HAVE EXTEND BE RECURSIVE
 			// OR UH... RETURN SOME STRUCT OR SOME SHIT??? FUCK ME
 			unsigned int closest_node = get_closest_node_to_point(local_goal_position);
+			printf("local_goal_position: %d %d\n", local_goal_position.val[0], local_goal_position.val[1]);
+			printf("closest node position: %d %d\n", nodes[closest_node]->position.val[0], nodes[closest_node]->position.val[1]);
+			// local_goal_position is being picked properly
+			// nodes[closest_node] isn't, so maybe my insertion is wrong...
 			RRTStatus status = extend(local_goal_position, nodes[closest_node], map, iterations);
 			if(status == TRAPPED || status == REACHED || status == GOAL_REACHED)
 			{
@@ -122,9 +126,9 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 	// IT'S GETTING TRUNCATED TO BE next_position AGAIN.
 	// HMMMMMM
 	cv::Vec2i next_position = (cv::Vec2f) current_node->position + step_size * unit_direction_vector;
-	printf("unit direction vector: %f %f\n", unit_direction_vector.val[0], unit_direction_vector.val[1]);
-	printf("Current node position: %d %d\n", current_node->position.val[0], current_node->position.val[1]);
-	printf("next position: %d, %d\n", next_position.val[0], next_position.val[1]);
+	//printf("unit direction vector: %f %f\n", unit_direction_vector.val[0], unit_direction_vector.val[1]);
+	//printf("Current node position: %d %d\n", current_node->position.val[0], current_node->position.val[1]);
+	//printf("next position: %d, %d\n", next_position.val[0], next_position.val[1]);
 
 	/*
 	printf("current node position: %d %d\n", current_node->position.val[0], current_node->position.val[1]);
@@ -151,7 +155,7 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 	current_node->children.push_back(next_node);
 	nodes.push_back(next_node);
 	leaf_nodes.push_back(next_node);
-	printf("EXTENDED\n");
+	//printf("EXTENDED\n");
 	return EXTENDED;
 }
 
