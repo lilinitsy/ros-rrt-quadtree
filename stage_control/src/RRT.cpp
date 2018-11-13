@@ -21,35 +21,41 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 	leaf_nodes.push_back(begin_node);
 	int z = 0;
 	//while(!goal_found())
-	while(z < 1000 || !goal_found())
+	while(z < 1000)
 	{
-		// TODO
-		// PROBABLY SHOULD MAKE START BE GET_CLOSEST_NODE
-
-
+		// ISSUE: LOCAL_GOAL_POSITION IS GETTING STUCK AT ROBOT START
 		z++;
+
 		// sample within a range of centre + stepsize * iterations
 		// and then have a 10% chance the goal node is picked.
 		int random_choice = rand() % 20;
-		//printf("Random choice: %d\n", random_choice);
+		printf("Random choice: %d\n", random_choice);
 
 		cv::Vec2i local_goal_position;
-		// 10% chance we choose the goal as the node we want to try to reach
-		if(random_choice > 17 || distance(start, goal) < step_size * iterations)
+		// 40% chance we choose the goal as the node we want to try to reach
+		if(random_choice > 12 || distance(start, goal) < step_size * iterations)
 		{
 			local_goal_position = goal;
 		}
 
 		else
 		{
-			local_goal_position = pick_local_goal_position(start, iterations, map);
+			//local_goal_position = pick_local_goal_position(start, iterations, map);
+			local_goal_position = pick_local_goal_position_global_version(map);
 		}
 
+		// TODO
+		// PROBABLY SHOULD MAKE START BE GET_CLOSEST_NODE....
+		start = get_closest_node_to_point(local_goal_position);
 
 		for(int i = 0; i < iterations; i++)
 		{
+			// OH, I'M NOT UPDATING THE LOCAL_GOAL_POS OR THE CLOSEST NODE, I THINK
+			// TODO FOR TUESDAY
+			// MAYBE HAVE TO HAVE EXTEND BE RECURSIVE
+			// OR UH... RETURN SOME STRUCT OR SOME SHIT??? FUCK ME
 			unsigned int closest_node = get_closest_node_to_point(local_goal_position);
-			RRTStatus status = extend(local_goal_position, nodes[closest_node], map);
+			RRTStatus status = extend(local_goal_position, nodes[closest_node], map, iterations);
 			if(status == TRAPPED || status == REACHED || status == GOAL_REACHED)
 			{
 				break;
@@ -59,8 +65,9 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 }
 
 
-RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMapModule map)
+RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMapModule map, int iterations)
 {
+// MIGHT HAVE TO DO RECURSIVELY WITH iterations == 0?	
 	/*
 		First check if we've reached the global goal
 			- if so, return GOAL_REACHED to stop building
@@ -90,8 +97,9 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 		return TRAPPED;
 	}
 
-	cv::Vec2f unit_direction_vector = make_non_negative(cv::normalize((cv::Vec2f) current_node->position - (cv::Vec2f) local_goal));
-	
+	//cv::Vec2f unit_direction_vector = make_non_negative(cv::normalize((cv::Vec2f) current_node->position - (cv::Vec2f) local_goal));
+	cv::Vec2f unit_direction_vector = cv::normalize((cv::Vec2f) current_node->position - (cv::Vec2f) local_goal);
+
 	// LOCAL GOAL REACHED
 	if(distance(current_node->position, local_goal) <= step_size)
 	{
@@ -109,7 +117,13 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 		return REACHED;
 	}
 
+
+	// THIS MAY BE WHY IT'S GETTING STUCK
+	// IT'S GETTING TRUNCATED TO BE next_position AGAIN.
+	// HMMMMMM
 	cv::Vec2i next_position = (cv::Vec2f) current_node->position + step_size * unit_direction_vector;
+	printf("unit direction vector: %f %f\n", unit_direction_vector.val[0], unit_direction_vector.val[1]);
+	printf("Current node position: %d %d\n", current_node->position.val[0], current_node->position.val[1]);
 	printf("next position: %d, %d\n", next_position.val[0], next_position.val[1]);
 
 	/*
@@ -239,6 +253,16 @@ cv::Vec2i RRT::pick_local_goal_position(cv::Vec2i start, int iterations, ReadMap
 }
 
 
+cv::Vec2i RRT::pick_local_goal_position_global_version(ReadMapModule map) // search from leaf nodes
+{
+	int x_pos = rand() % 809;
+	int y_pos = rand() & 689;
+	printf("x_pos: %d, y_pos: %d\n", x_pos, y_pos);
+	return cv::Vec2i(x_pos, y_pos);
+}
+
+
+// THIS FUNCTION MAY HAVE BEEN A STUPID IDEA
 float RRT::make_non_negative(cv::Vec2f vect)
 {
 	if(vect.val[0] < 0.0f)
