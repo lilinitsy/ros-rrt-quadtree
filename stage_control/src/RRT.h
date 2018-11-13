@@ -57,6 +57,8 @@ class RRT
         cv::Vec2i pick_local_goal_position_global_version(ReadMapModule map); // search from leaf nodes
 
         float make_non_negative(cv::Vec2f vect);
+
+        cv::Vec2f lerp(cv::Vec2i vec);
 };
 
 

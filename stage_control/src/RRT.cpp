@@ -23,15 +23,13 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 	//while(!goal_found())
 	while(z < 1000)
 	{
-		// ISSUE: LOCAL_GOAL_POSITION IS GETTING STUCK AT ROBOT START
 		z++;
+		printf("Z: %d\n\n", z);
 
-		// sample within a range of centre + stepsize * iterations
 		// and then have a 10% chance the goal node is picked.
 		int random_choice = rand() % 20;
-		printf("Random choice: %d\n", random_choice);
-
 		cv::Vec2i local_goal_position;
+
 		// 40% chance we choose the goal as the node we want to try to reach
 		if(random_choice > 12 || distance(start, goal) < step_size * iterations)
 		{
@@ -40,31 +38,14 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 
 		else
 		{
-			//local_goal_position = pick_local_goal_position(start, iterations, map);
 			local_goal_position = pick_local_goal_position_global_version(map);
 		}
 
-		// TODO
-		// PROBABLY SHOULD MAKE START BE GET_CLOSEST_NODE....
-		start = get_closest_node_to_point(local_goal_position);
-
-		for(int i = 0; i < iterations; i++)
-		{
-			// OH, I'M NOT UPDATING THE LOCAL_GOAL_POS OR THE CLOSEST NODE, I THINK
-			// TODO FOR TUESDAY
-			// MAYBE HAVE TO HAVE EXTEND BE RECURSIVE
-			// OR UH... RETURN SOME STRUCT OR SOME SHIT??? FUCK ME
-			unsigned int closest_node = get_closest_node_to_point(local_goal_position);
-			printf("local_goal_position: %d %d\n", local_goal_position.val[0], local_goal_position.val[1]);
-			printf("closest node position: %d %d\n", nodes[closest_node]->position.val[0], nodes[closest_node]->position.val[1]);
-			// local_goal_position is being picked properly
-			// nodes[closest_node] isn't, so maybe my insertion is wrong...
-			RRTStatus status = extend(local_goal_position, nodes[closest_node], map, iterations);
-			if(status == TRAPPED || status == REACHED || status == GOAL_REACHED)
-			{
-				break;
-			}
-		}
+		unsigned int closest_node = get_closest_node_to_point(local_goal_position);
+		start = nodes[closest_node]->position;
+		//printf("local_goal_position: %d %d\n", local_goal_position.val[0], local_goal_position.val[1]);
+		//printf("closest node position: %d %d\n", start.val[0], start.val[1]);
+		RRTStatus status = extend(local_goal_position, nodes[closest_node], map, iterations);
 	}
 }
 
@@ -77,6 +58,14 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 			- if so, return GOAL_REACHED to stop building
 				(TODO: Add a parameter to keep building 'for a while" after)
 	*/
+
+	printf("ITERATIONS: %d\n", iterations);
+
+	if(iterations == 0)
+	{
+		return EXTENDED;
+	}
+
 	if(distance(current_node->position, goal) <= step_size)
 	{
 		RRTNode *global_goal_node = new RRTNode(goal);
@@ -89,22 +78,17 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 		current_node->children.push_back(global_goal_node);
 		nodes.push_back(global_goal_node);
 		leaf_nodes.push_back(global_goal_node);
-		//printf("GOAL REACHED\n");
 		return GOAL_REACHED;
 	}
 
 	// POINT IS IN A WALL
 	if(!valid_point(local_goal, map))
-	{
-	//	printf("TRAPPED\n");
-	//	printf("Point trapped local_goal: %d, %d\n", local_goal.val[0], local_goal.val[1]);
+	{	
 		return TRAPPED;
 	}
 
-	//cv::Vec2f unit_direction_vector = make_non_negative(cv::normalize((cv::Vec2f) current_node->position - (cv::Vec2f) local_goal));
 	cv::Vec2f unit_direction_vector = cv::normalize((cv::Vec2f) current_node->position - (cv::Vec2f) local_goal);
 
-	// LOCAL GOAL REACHED
 	if(distance(current_node->position, local_goal) <= step_size)
 	{
 		RRTNode *local_goal_node = new RRTNode(local_goal);
@@ -117,34 +101,21 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 		current_node->children.push_back(local_goal_node);
 		nodes.push_back(local_goal_node);
 		leaf_nodes.push_back(local_goal_node);
-	//	printf("LOCAL GOAL REACHED\n");
 		return REACHED;
 	}
 
 
-	// THIS MAY BE WHY IT'S GETTING STUCK
-	// IT'S GETTING TRUNCATED TO BE next_position AGAIN.
-	// HMMMMMM
+	//cv::Vec2i next_position = lerp((cv::Vec2f) current_node->position + step_size * unit_direction_vector);
 	cv::Vec2i next_position = (cv::Vec2f) current_node->position + step_size * unit_direction_vector;
-	//printf("unit direction vector: %f %f\n", unit_direction_vector.val[0], unit_direction_vector.val[1]);
-	//printf("Current node position: %d %d\n", current_node->position.val[0], current_node->position.val[1]);
-	//printf("next position: %d, %d\n", next_position.val[0], next_position.val[1]);
+	next_position = lerp(next_position);
 
-	/*
-	printf("current node position: %d %d\n", current_node->position.val[0], current_node->position.val[1]);
-	printf("Step size: %d\n", step_size);
-	printf("unit direction vector: %f %f\n", unit_direction_vector.val[0], unit_direction_vector.val[1]);
-	printf("next position: %d %d\n\n", next_position.val[0], next_position.val[1]);
-	*/
 	// EXTENSION NODE IS INVALID -> TRAPPED
 	if(!valid_point(next_position, map))
 	{
-	//	printf("TRAPPEDDDD\n");
 		return TRAPPED;
 	}
 
 	// CAN EXTEND
-
 	RRTNode *next_node = new RRTNode(next_position);
 	
 	if(current_node->children.size() > 0)
@@ -155,8 +126,7 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 	current_node->children.push_back(next_node);
 	nodes.push_back(next_node);
 	leaf_nodes.push_back(next_node);
-	//printf("EXTENDED\n");
-	return EXTENDED;
+	return extend(local_goal, next_node, map, iterations - 1);
 }
 
 
@@ -259,8 +229,8 @@ cv::Vec2i RRT::pick_local_goal_position(cv::Vec2i start, int iterations, ReadMap
 
 cv::Vec2i RRT::pick_local_goal_position_global_version(ReadMapModule map) // search from leaf nodes
 {
-	int x_pos = rand() % 809;
-	int y_pos = rand() & 689;
+	int x_pos = rand() % 808;
+	int y_pos = rand() & 688;
 	printf("x_pos: %d, y_pos: %d\n", x_pos, y_pos);
 	return cv::Vec2i(x_pos, y_pos);
 }
@@ -278,4 +248,31 @@ float RRT::make_non_negative(cv::Vec2f vect)
 	{
 		vect.val[1] = 0.0f;
 	}
+}
+
+
+cv::Vec2f RRT::lerp(cv::Vec2i vec)
+{
+	cv::Vec2i new_vec = vec;
+	if(vec.val[0] > 809)
+	{
+		new_vec.val[0] = 808;
+	}
+
+	else if(vec.val[0] < 0)
+	{
+		new_vec.val[0] = 0;
+	}
+
+	if(vec.val[1] > 689)
+	{
+		new_vec.val[1] = 688;
+	}
+
+	else if(vec.val[1] < 0)
+	{
+		new_vec.val[0] = 0;
+	}
+
+	return new_vec;
 }
