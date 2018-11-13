@@ -21,8 +21,12 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 	leaf_nodes.push_back(begin_node);
 	int z = 0;
 	//while(!goal_found())
-	while(z < 1000)
+	while(z < 1000 || !goal_found())
 	{
+		// TODO
+		// PROBABLY SHOULD MAKE START BE GET_CLOSEST_NODE
+
+
 		z++;
 		// sample within a range of centre + stepsize * iterations
 		// and then have a 10% chance the goal node is picked.
@@ -41,13 +45,11 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 			local_goal_position = pick_local_goal_position(start, iterations, map);
 		}
 
-		printf("LOCAL GOAL POSITION: %d %d\n", local_goal_position.val[0], local_goal_position.val[1]);
 
 		for(int i = 0; i < iterations; i++)
 		{
 			unsigned int closest_node = get_closest_node_to_point(local_goal_position);
 			RRTStatus status = extend(local_goal_position, nodes[closest_node], map);
-			printf("z: %d i: %d: Status: %d\n", z, i, status);
 			if(status == TRAPPED || status == REACHED || status == GOAL_REACHED)
 			{
 				break;
@@ -76,15 +78,15 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 		current_node->children.push_back(global_goal_node);
 		nodes.push_back(global_goal_node);
 		leaf_nodes.push_back(global_goal_node);
-		printf("GOAL REACHED\n");
+		//printf("GOAL REACHED\n");
 		return GOAL_REACHED;
 	}
 
 	// POINT IS IN A WALL
 	if(!valid_point(local_goal, map))
 	{
-		printf("TRAPPED\n");
-		printf("Point trapped local_goal: %d, %d\n", local_goal.val[0], local_goal.val[1]);
+	//	printf("TRAPPED\n");
+	//	printf("Point trapped local_goal: %d, %d\n", local_goal.val[0], local_goal.val[1]);
 		return TRAPPED;
 	}
 
@@ -103,7 +105,7 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 		current_node->children.push_back(local_goal_node);
 		nodes.push_back(local_goal_node);
 		leaf_nodes.push_back(local_goal_node);
-		printf("LOCAL GOAL REACHED\n");
+	//	printf("LOCAL GOAL REACHED\n");
 		return REACHED;
 	}
 
@@ -119,7 +121,7 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 	// EXTENSION NODE IS INVALID -> TRAPPED
 	if(!valid_point(next_position, map))
 	{
-		printf("TRAPPEDDDD\n");
+	//	printf("TRAPPEDDDD\n");
 		return TRAPPED;
 	}
 
@@ -170,8 +172,8 @@ bool RRT::valid_point(const cv::Vec2i point, ReadMapModule map)
 {
 	int i = point.val[0];
 	int j = point.val[1];
-	printf("i, j: %d, %d\n", i, j);
-	return map.map[i][j].blocked;
+	//printf("i, j: %d, %d\n", i, j);
+	return !map.map[i][j].blocked;
 }
 
 float RRT::distance(cv::Vec2i a, cv::Vec2i b)
@@ -213,7 +215,7 @@ cv::Vec2i RRT::pick_local_goal_position(cv::Vec2i start, int iterations, ReadMap
 	int xmax = start.val[0] + step_size * iterations;
 	int ymin = start.val[1] - step_size * iterations;
 	int ymax = start.val[1] + step_size * iterations;
-	printf("start.val[0]: %d\t step_size: %d\t iterations: %d\n", start.val[0], step_size, iterations);
+	//printf("start.val[0]: %d\t step_size: %d\t iterations: %d\n", start.val[0], step_size, iterations);
 	if(xmin < 0)
 	{
 		xmin = 0;
@@ -230,10 +232,6 @@ cv::Vec2i RRT::pick_local_goal_position(cv::Vec2i start, int iterations, ReadMap
 	{
 		ymax = map.max_pixels.val[0] - 1;
 	}
-
-	printf("xmin, xmax: %d %d\n", xmin, xmax);
-	printf("ymin, ymax: %d %d\n", ymin, ymax);
-
 
 	int x_pos = rand() % (xmax - xmin + 1) + xmin;
 	int y_pos = rand() % (ymax - ymin + 1) + ymin;

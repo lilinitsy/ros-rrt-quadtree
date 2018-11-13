@@ -33,6 +33,7 @@ class Robot
 	private:
 		void pose_callback(const nav_msgs::Odometry::ConstPtr &o);
 		void print_pose();
+		void write_image(int rows, int columns);
 };
 
 

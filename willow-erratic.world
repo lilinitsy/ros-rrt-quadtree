@@ -52,7 +52,7 @@ interval_sim 100  # simulation timestep in milliseconds
 
 window
 ( 
-  size [ 820.000 700.000 ] # in pixels.
+  size [ 809.000 689.000 ] # in pixels.
 
   rotate [ 0.000 0.000 ] #rotation angles with x and y axes
   scale 28.806 #pixels per meter
@@ -65,7 +65,7 @@ floorplan
 ( 
   name "autolab"
   bitmap "bitmaps/autolab.png"
-  size [54.0 58.7 0.5] # meters
+  size [60.0 60.0 0.5] # meters
   pose [ 0 0 0 0 ]
 )
 

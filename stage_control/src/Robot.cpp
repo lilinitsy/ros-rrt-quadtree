@@ -6,6 +6,8 @@
 #include <geometry_msgs/Pose2D.h>
 #include <geometry_msgs/Twist.h>
 
+#include <opencv2/imgproc.hpp>
+
 
 #include "Robot.h"
 
@@ -37,8 +39,25 @@ void Robot::run()
 	rrt.build_rrt(pixel_position, map, 10);
 	printf("RRT built\n");
 	printf("RRT nodes size: %lu\n", rrt.nodes.size());
-	while(ros::ok())
+	write_image(689, 809);
+/*	while(ros::ok())
 	{
 		ros::spinOnce();
+	}*/
+}
+
+void Robot::write_image(int rows, int columns)
+{
+	cv::Mat output = cv::Mat::zeros(rows, columns, CV_8UC3);
+
+	for(unsigned int i = 0; i < rrt.nodes.size(); i++)
+	{
+		for(int j = 0; j < rrt.nodes[i]->children.size(); j++)
+		{
+			cv::line(output, rrt.nodes[i]->position, rrt.nodes[i]->children[j]->position, cv::Scalar(255, 255, 0));
+		}
 	}
+	cv::namedWindow("Graph", CV_WINDOW_AUTOSIZE);
+	cv::imshow("Graph", output);
+	cv::waitKey(0);
 }
