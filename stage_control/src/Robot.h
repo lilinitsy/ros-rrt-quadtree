@@ -27,7 +27,7 @@ class Robot
 		geometry_msgs::Pose pose;
 
 		RRT rrt;
-		QuadTree quadtree;
+		QuadTree *quadtree;
 		ReadMapModule map;
 		DjikstraRRT rrt_path;
 

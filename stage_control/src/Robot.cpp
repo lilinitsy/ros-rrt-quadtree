@@ -65,8 +65,12 @@ void Robot::run_quadtree()
 	//cv::Vec2i pixel_position = map.get_pixel_coordinates(-15.277f, 13.266f, 689, 809, 28.806f);
 	cv::Vec2i pixel_position = cv::Vec2i(233, 203);
 	cv::Vec2i goal_position = cv::Vec2i(494, 261);
+	std::vector<QuadTree*> clear_boxes;
+	AABB boundary = AABB(cv::Vec2i(404, 344), 400, 340);
+	quadtree = new QuadTree(boundary, 10);
 
-	quadtree.build_quadtree(map);
+	quadtree->build_quadtree(map, clear_boxes);
+	printf("clear_boxes size: %lu\n", clear_boxes.size());
 }
 
 
