@@ -43,12 +43,12 @@ void ReadMapModule::construct_map(cv::Mat image)
 	{
 		for(int j = 0; j < image.rows; j++)
 		{
-			cv::Scalar colour = image.at<uchar>(cv::Point(i, j));
+			cv::Vec3b colour = image.at<cv::Vec3b>(cv::Point(i, j));
 			map[i][j].pixel_space = cv::Vec2i(i, j);
 			map[i][j].world_space = get_world_coordinates(i, j, 28.809, image.cols, image.rows);
 
 			// if the colour is blackish
-			if(colour[0] < 50 && colour[1] < 50 && colour[2] < 50)
+			if(colour.val[0] < 50 && colour.val[1] < 50 && colour.val[2] < 50)
 			{
 				map[i][j].blocked = true;
 				std::cout << "Blocked at (" << i << ", " << j << ")" << std::endl;
@@ -56,9 +56,13 @@ void ReadMapModule::construct_map(cv::Mat image)
 		}
 	}
 
+	cv::Vec3b colour = image.at<cv::Vec3b>(cv::Point(404, 245));
+	std::cout << "Colour at 404, 245: " << colour << std::endl;
+	cv::Vec3b colour2 = image.at<uchar>(cv::Point(808, 526));
+	std::cout << "Colour at 808, 526: " << colour << std::endl;
 }
 
-
+// this might be broken
 cv::Vec2f ReadMapModule::get_world_coordinates(int x, int y, float pixels_to_meters, int pixel_cols, int pixel_rows)
 {
 	float world_min_x = -(54.0f / 2);
@@ -68,7 +72,7 @@ cv::Vec2f ReadMapModule::get_world_coordinates(int x, int y, float pixels_to_met
 	return cv::Vec2f(world_x, world_y);
 }
 
-
+// this is broken
 cv::Vec2i ReadMapModule::get_pixel_coordinates(float world_x, float world_y, int pixel_rows, int pixel_cols, float pixels_to_meters)
 {
 	/*
@@ -94,7 +98,7 @@ cv::Vec2i ReadMapModule::get_pixel_coordinates(float world_x, float world_y, int
 
 	if(world_y < 0)
 	{
-		
+
 	}
 	return cv::Vec2i(pixel_x, pixel_y);
 }

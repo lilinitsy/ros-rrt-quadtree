@@ -60,9 +60,9 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 		else if(status == TRAPPED)
 		{
 			printf("TRAPPED\n");
-			RRTNode *last_node = nodes[nodes.size() - 1];
-			nodes.erase(nodes.end());
-			delete last_node;
+		//	RRTNode *last_node = nodes[nodes.size() - 1];
+		//	nodes.erase(nodes.end());
+		//	delete last_node;
 		}
 	}
 
