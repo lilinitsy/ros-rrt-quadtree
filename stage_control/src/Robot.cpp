@@ -71,6 +71,51 @@ void Robot::run_quadtree()
 
 	quadtree->build_quadtree(map, clear_boxes);
 	printf("clear_boxes size: %lu\n", clear_boxes.size());
+
+	quadtree_write_image(689, 809, clear_boxes);
+
+	while(ros::ok())
+	{
+		ros::spinOnce();
+	}
+}
+
+
+void  Robot::quadtree_write_image(int rows, int columns, std::vector<QuadTree*> clear_boxes)
+{
+	cv::Mat image = cv::imread("src/ros-rrt-quadtree/bitmaps/autolab.png", cv::IMREAD_COLOR);
+
+	for(unsigned int i = 0; i < clear_boxes.size(); i++)
+	{
+		AABB boundary = clear_boxes[i]->boundary;
+		// POINTS:
+		int bottom_left_x = boundary.center.val[0] - boundary.half_dimension_x;
+		int bottom_left_y = boundary.center.val[1] - boundary.half_dimension_y;
+		cv::Vec2i bottom_left = cv::Vec2i(bottom_left_x, bottom_left_y);
+
+		int top_left_x = boundary.center.val[0] - boundary.half_dimension_x;
+		int top_left_y = boundary.center.val[1] + boundary.half_dimension_y;
+		cv::Vec2i top_left = cv::Vec2i(top_left_x, top_left_y);
+
+		int bottom_right_x = boundary.center.val[0] + boundary.half_dimension_x;
+		int bottom_right_y = boundary.center.val[1] - boundary.half_dimension_y;
+		cv::Vec2i bottom_right = cv::Vec2i(bottom_right_x, bottom_right_y);
+
+		int top_right_x = boundary.center.val[0] + boundary.half_dimension_x;
+		int top_right_y = boundary.center.val[1] + boundary.half_dimension_y;
+		cv::Vec2i top_right = cv::Vec2i(top_right_x, top_right_y);
+
+		cv::line(image, bottom_left, top_left, cv::Scalar(0, 255, 0));
+		cv::line(image, bottom_left, bottom_right, cv::Scalar(0, 255, 0));
+		cv::line(image, top_left, top_right, cv::Scalar(0, 255, 0));
+		cv::line(image, top_right, bottom_right, cv::Scalar(0, 255, 0));
+	}
+
+	cv::namedWindow("Graph", CV_WINDOW_AUTOSIZE);
+	cv::imshow("Graph", image);
+	cv::imwrite("src/ros-rrt-quadtree/quadtree.png", image);
+	cv::waitKey(0);
+
 }
 
 

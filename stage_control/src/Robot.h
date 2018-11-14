@@ -39,6 +39,7 @@ class Robot
 		void pose_callback(const nav_msgs::Odometry::ConstPtr &o);
 		void print_pose();
 		void rrt_write_image(int rows, int columns);
+		void quadtree_write_image(int rows, int columns, std::vector<QuadTree*> clear_boxes);
 };
 
 
