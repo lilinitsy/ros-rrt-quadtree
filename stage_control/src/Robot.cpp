@@ -43,6 +43,8 @@ void Robot::run()
 	printf("pixel_position: %d %d\n", pixel_position.val[0], pixel_position.val[1]);
 	
 	rrt_path.find_path(rrt.nodes, rrt.nodes[0], goal_position);
+	printf("Djikstra RRT path found\n");
+	printf("Size of djikstra RRT path: %lu\n", rrt_path.path.size());
 	
 	write_image(689, 809);
 
@@ -61,13 +63,22 @@ void Robot::write_image(int rows, int columns)
 	cv::Mat image = cv::imread("src/ros-rrt-quadtree/bitmaps/autolab.png", cv::IMREAD_COLOR);
 	
 //Scalar intensity = img.at<uchar>(y, x);
+	// draw the tree in 255b, 255g... since it's BGR?
 	for(unsigned int i = 0; i < rrt.nodes.size(); i++)
 	{
-		for(int j = 0; j < rrt.nodes[i]->children.size(); j++)
+		for(unsigned int j = 0; j < rrt.nodes[i]->children.size(); j++)
 		{
 			cv::line(image, rrt.nodes[i]->position, rrt.nodes[i]->children[j]->position, cv::Scalar(255, 255, 0));
 		}
 	}
+
+	// draw the path in.... RED???
+	for(unsigned int i = 0; i < rrt_path.path.size() - 1; i++)
+	{
+		cv::line(image, rrt_path.path[i]->position, rrt_path.path[i + 1]->position, cv::Scalar(0, 0, 255));
+	}
+
+
 
 	cv::namedWindow("Graph", CV_WINDOW_AUTOSIZE);
 	cv::imshow("Graph", image);
