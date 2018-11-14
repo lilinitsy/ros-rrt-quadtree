@@ -70,7 +70,7 @@ class QuadTree
 
 		QuadTree();
 		QuadTree(AABB boundary, float mh);
-		void build_quadtree(ReadMapModule map, std::vector<QuadTree*> clear_boxes);
+		void build_quadtree(ReadMapModule map, std::vector<QuadTree*> &clear_boxes);
 		void subdivide();
 
 	private:

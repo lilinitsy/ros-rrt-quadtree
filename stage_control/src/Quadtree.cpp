@@ -16,7 +16,7 @@ QuadTree::QuadTree(AABB b, float mh)
 	min_hd = mh;
 }
 
-void QuadTree::build_quadtree(ReadMapModule map, std::vector<QuadTree*> clear_boxes)
+void QuadTree::build_quadtree(ReadMapModule map, std::vector<QuadTree*> &clear_boxes)
 {
 	int bottom_x = boundary.center.val[0] - boundary.half_dimension_x;
 	int bottom_y = boundary.center.val[1] - boundary.half_dimension_y;
@@ -28,6 +28,7 @@ void QuadTree::build_quadtree(ReadMapModule map, std::vector<QuadTree*> clear_bo
 
 	if(!cell_clear(map, lower_bound, upper_bound))
 	{
+		printf("FALSE\n");
 		clear = false;
 
 		// this node has children and is blocked..
@@ -40,22 +41,29 @@ void QuadTree::build_quadtree(ReadMapModule map, std::vector<QuadTree*> clear_bo
 		}*/
 
 		// this node does not have children
-		if(boundary.half_dimension_x > min_hd && boundary.half_dimension_y > min_hd && top_left == nullptr)
+		if(boundary.half_dimension_x > 2 * min_hd && boundary.half_dimension_y > 2 * min_hd && top_left == nullptr)
 		{
+			printf("In boundary check\n");
 			subdivide();
 			print_boxes();
 			printf("SUBDIVIDING\n");
+			top_left->build_quadtree(map, clear_boxes);
+			top_right->build_quadtree(map, clear_boxes);
+			bottom_left->build_quadtree(map, clear_boxes);
+			bottom_right->build_quadtree(map, clear_boxes);
 		}
-		top_left->build_quadtree(map, clear_boxes);
-		top_right->build_quadtree(map, clear_boxes);
-		bottom_left->build_quadtree(map, clear_boxes);
-		bottom_right->build_quadtree(map, clear_boxes);
 
+		else if(boundary.half_dimension_x < 2 * min_hd && boundary.half_dimension_y < 2 * min_hd && top_left == nullptr)
+		{
+			return;
+		}
 	}
 
 	else
 	{
+		printf("PUSHING BACK\n");
 		clear_boxes.push_back(this); // IS THIS SAFE? I DON'T KNOW
+		printf("CLEAR BOXES SIZE INTERNALL: %lu\n", clear_boxes.size());
 	}
 
 	return;
@@ -80,6 +88,7 @@ void QuadTree::subdivide()
 		boundary.center.val[0] + child_hd_x,
 		boundary.center.val[1] - child_hd_y);
 	
+
 	lerp(top_left_center + cv::Vec2i(child_hd_x, child_hd_y));
 	lerp(top_right_center + cv::Vec2i(child_hd_x, child_hd_y));
 	lerp(bottom_left_center + cv::Vec2i(child_hd_x, child_hd_y));
@@ -108,6 +117,7 @@ bool QuadTree::cell_clear(ReadMapModule map, cv::Vec2i lower_bound, cv::Vec2i up
 		{
 			if(map.map[i][j].blocked)
 			{
+				printf("\n%d %d BLOCKED\n", i, j);
 				return false;
 			}
 		}
