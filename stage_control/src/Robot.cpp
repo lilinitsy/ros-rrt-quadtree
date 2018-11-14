@@ -41,6 +41,9 @@ void Robot::run()
 	printf("RRT nodes size: %lu\n", rrt.nodes.size());
 	printf("World position: %f %f\n", pose.position.x, pose.position.y);
 	printf("pixel_position: %d %d\n", pixel_position.val[0], pixel_position.val[1]);
+	
+	rrt_path.find_path(rrt.nodes, rrt.nodes[0], goal_position);
+	
 	write_image(689, 809);
 
 	// initialize djikstraRRT path here

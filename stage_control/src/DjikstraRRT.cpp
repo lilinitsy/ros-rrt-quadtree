@@ -1,17 +1,18 @@
 #include "DjikstraRRT.h"
 
+
 DjikstraRRT::DjikstraRRT()
 {
 
 }
 
 // FOLLOWS WIKIPEDIA PSEUDOCODE, SO VARIABLE NAMES WILL LOOK... VARI ASS
-void find_path(std::vector<RRTNode*> graph, RRTNode *start)
+void find_path(std::vector<RRTNode*> graph, RRTNode *start, cv::Vec2i goal)
 {
 	std::vector<DjikstraRRTNode> Q;
 
 	// lines 5 through 8
-	for(unsigned int i = 1; i < graph.size(); i++)
+	for(unsigned int i = 0; i < graph.size(); i++)
 	{
 		DjikstraRRTNode v;
 		v.node = graph[i];
@@ -41,9 +42,20 @@ void find_path(std::vector<RRTNode*> graph, RRTNode *start)
 		// line 17
 		for(unsigned int i = 0; i < u.node->children.size(); i++)
 		{
+			// line 18
 			float alt = u.distance + distance(u, u.node->children[i]);
+			unsigned int v_index = get_node_index(u.node->children[i], Q);
+
+			// line 19
+			if(alt < Q[v_index].distance)
+			{
+				Q[v_index].distance = alt;
+				Q[v_index].previous = u.node;
+				path.push_back(u.node);
+			}
 		}
 
+	//	for(int i = 0; i < )
 	}
 }
 
@@ -81,4 +93,7 @@ unsigned int DjikstraRRT::get_node_index(DjikstraRRTNode u, std::vector<Djikstra
 float DjikstraRRT::distance(RRTNode *u, RRTNode *vchild)
 {
 	// opencv funcs
+	cv::Vec2f a = u->position;
+	cv::Vec2f b = vchild->position;
+    return sqrtf(powf(a.val[0] - b.val[0], 2.0f) + powf(a.val[1] - b.val[1], 2.0f));
 }

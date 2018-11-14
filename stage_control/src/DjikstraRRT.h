@@ -22,7 +22,7 @@ class DjikstraRRT
 		std::vector<RRTNode*> path;
 
 		DjikstraRRT();
-		void find_path(std::vector<RRTNode*> graph, RRTNode *start);
+		void find_path(std::vector<RRTNode*> graph, RRTNode *start, cv::Vec2i goal);
 	
 	private:
 		DjikstraRRTNode min_distance_in_Q(std::vector<DjikstraRRTNode> Q);
