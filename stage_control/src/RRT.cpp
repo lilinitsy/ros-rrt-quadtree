@@ -54,7 +54,7 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 
 		if(distance(begin_pos, goal) < step_size * iterations)
 		{
-			printf("begin_pos: %d %d\n", begin_pos.val[0], begin_pos.val[1]);
+		//	printf("begin_pos: %d %d\n", begin_pos.val[0], begin_pos.val[1]);
 		//	bool goal_finally_reached = call_hacky_workaround(begin_pos, goal);
 		}
 		//printf("local_goal_position: %d %d\n", local_goal_position.val[0], local_goal_position.val[1]);
@@ -64,6 +64,11 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 		{
 			printf("GOAL REACHED\n");
 			break;
+		}
+
+		else if(status == TRAPPED)
+		{
+			printf("TRAPPED\n");
 		}
 	}
 
@@ -119,8 +124,8 @@ RRTStatus RRT::extend(const cv::Vec2i local_goal, RRTNode *current_node, ReadMap
 
 	//printf("\tLOCAL GOAL: %d %d\n", local_goal.val[0], local_goal.val[1]);
 	//printf("\tCURRENT NODE: %d %d\n", current_node->position.val[0], current_node->position.val[1]);
-	printf("\tNEXT POSITION %d %d\n", next_position.val[0], next_position.val[1]);
-	printf("\tUNIT DIRECTION VECTOR %f %f\n\n", unit_direction_vector.val[0], unit_direction_vector.val[1]);
+	//printf("\tNEXT POSITION %d %d\n", next_position.val[0], next_position.val[1]);
+	//printf("\tUNIT DIRECTION VECTOR %f %f\n\n", unit_direction_vector.val[0], unit_direction_vector.val[1]);
 	// EXTENSION NODE IS INVALID -> TRAPPED
 	if(!valid_point(next_position, map))
 	{
