@@ -15,11 +15,10 @@ struct DjikstraRRTNode
 	float distance;
 };
 
-
 class DjikstraRRT
 {
 	public:
-		std::vector<RRTNode*> path;
+		std::vector<DjikstraRRTNode> path;
 
 		DjikstraRRT();
 		void find_path(std::vector<RRTNode*> graph, RRTNode *start, cv::Vec2i goal);

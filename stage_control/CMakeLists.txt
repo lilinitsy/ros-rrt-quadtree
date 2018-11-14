@@ -145,6 +145,16 @@ add_executable(rrtplanner src/RRTPlanner.cpp
                           src/RRT.cpp
                           src/Robot.cpp
                           src/DjikstraRRT.cpp
+                          src/Quadtree.cpp
+)
+
+add_executable(qtplanner src/QuadtreePlanner.cpp
+                          src/Map.cpp
+                          src/Quadtree.cpp
+                          src/Robot.cpp
+                          src/RRT.cpp
+                          src/RRTNode.cpp
+                          src/DjikstraRRT.cpp
 )
 
 ## Rename C++ executable without prefix
@@ -163,6 +173,11 @@ add_executable(rrtplanner src/RRTPlanner.cpp
 # )
 
 target_link_libraries(rrtplanner
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+)
+
+target_link_libraries(qtplanner
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
 )

@@ -27,7 +27,7 @@ void Robot::pose_callback(const nav_msgs::Odometry::ConstPtr &o)
 }
 
 
-void Robot::run()
+void Robot::run_rrt()
 {
 	ros::Rate rate(1);
 	cv::Vec2d position = cv::Vec2d(-15.277f, 13.266f);
@@ -46,7 +46,7 @@ void Robot::run()
 	printf("Djikstra RRT path found\n");
 	printf("Size of djikstra RRT path: %lu\n", rrt_path.path.size());
 	
-	write_image(689, 809);
+	rrt_write_image(689, 809);
 
 	// initialize djikstraRRT path here
 	// after doing that, go through the path and convert coordinates
@@ -57,7 +57,20 @@ void Robot::run()
 	}
 }
 
-void Robot::write_image(int rows, int columns)
+
+void Robot::run_quadtree()
+{
+	ros::Rate rate(1);
+	cv::Vec2d position = cv::Vec2d(-15.277f, 13.266f);
+	//cv::Vec2i pixel_position = map.get_pixel_coordinates(-15.277f, 13.266f, 689, 809, 28.806f);
+	cv::Vec2i pixel_position = cv::Vec2i(233, 203);
+	cv::Vec2i goal_position = cv::Vec2i(494, 261);
+
+	quadtree.build_quadtree(map);
+}
+
+
+void Robot::rrt_write_image(int rows, int columns)
 {
 	//cv::Mat output = cv::Mat::zeros(rows, columns, CV_8UC3);
 	cv::Mat image = cv::imread("src/ros-rrt-quadtree/bitmaps/autolab.png", cv::IMREAD_COLOR);
@@ -72,12 +85,13 @@ void Robot::write_image(int rows, int columns)
 		}
 	}
 
+	/*
 	// draw the path in.... RED???
-	for(unsigned int i = 0; i < rrt_path.path.size() - 1; i++)
+	for(unsigned int i = 1; i < rrt_path.path.size() - 1; i++)
 	{
-		cv::line(image, rrt_path.path[i]->position, rrt_path.path[i + 1]->position, cv::Scalar(0, 0, 255));
+		cv::line(image, rrt_path.path[i].previous->position, rrt_path.path[i].node->position, cv::Scalar(0, 0, 255));
 	}
-
+	*/
 
 
 	cv::namedWindow("Graph", CV_WINDOW_AUTOSIZE);

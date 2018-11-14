@@ -13,6 +13,7 @@
 
 #include "DjikstraRRT.h"
 #include "Map.h"
+#include "Quadtree.h"
 #include "RRTNode.h"
 #include "RRT.h"
 
@@ -26,16 +27,18 @@ class Robot
 		geometry_msgs::Pose pose;
 
 		RRT rrt;
+		QuadTree quadtree;
 		ReadMapModule map;
 		DjikstraRRT rrt_path;
 
 		Robot();
-		void run();
+		void run_rrt();
+		void run_quadtree();
 
 	private:
 		void pose_callback(const nav_msgs::Odometry::ConstPtr &o);
 		void print_pose();
-		void write_image(int rows, int columns);
+		void rrt_write_image(int rows, int columns);
 };
 
 

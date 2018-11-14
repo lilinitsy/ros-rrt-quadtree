@@ -1,3 +1,6 @@
+#include <queue>
+
+
 #include "DjikstraRRT.h"
 
 
@@ -9,78 +12,65 @@ DjikstraRRT::DjikstraRRT()
 // FOLLOWS WIKIPEDIA PSEUDOCODE, SO VARIABLE NAMES WILL LOOK... VARI ASS
 void DjikstraRRT::find_path(std::vector<RRTNode*> graph, RRTNode *start, cv::Vec2i goal)
 {
-	std::vector<DjikstraRRTNode> Q;
-	std::vector<DjikstraRRTNode> tmp_path;
+	auto DjikstraCompare = [] (DjikstraRRTNode a, DjikstraRRTNode b)
+	{
+		return a.distance < b.distance;
+	};
+	std::priority_queue<DjikstraRRTNode, std::vector<DjikstraRRTNode>, decltype(DjikstraCompare)> Q(DjikstraCompare);
 
-	// lines 5 through 8
 	for(unsigned int i = 0; i < graph.size(); i++)
 	{
 		DjikstraRRTNode v;
-		v.node = graph[i];
-		v.previous = nullptr; // this is safe, right? RIGHT????
-		v.distance = INFINITY;
-		Q.push_back(v);
+		v.node = graph[i]; // this may not matter?
+		v.previous = nullptr;
+
+		if(graph[i] != start)
+		{
+			v.distance = INFINITY;
+		}
+
+		else
+		{
+			v.distance = 0.0f;
+		}
+
+		Q.push(v);
 	}
 
-	// line 10
-	for(unsigned int i = 0; i < Q.size(); i++)
+	// this is so I can pop shit off Q to get the nodes...
+
+	while(!Q.empty())
 	{
-		if(Q[i].node == start)
+		std::priority_queue<DjikstraRRTNode, std::vector<DjikstraRRTNode>, decltype(DjikstraCompare)> hacked_Q = Q;
+		DjikstraRRTNode u = hacked_Q.top();
+		for(RRTNode *child : u.node->children)
 		{
-			Q[i].distance = 0;
-			break;
-		}
-	}
+			printf("IN CHILDTHING\n");
+			float alt = u.distance + distance(child, u.node);
 
-	// line 12
-	while(Q.size() > 0)
-	{
-		// line 13
-		DjikstraRRTNode u = min_distance_in_Q(Q);
-
-		// line 15
-		unsigned int u_index = get_node_index(u, Q);
-		if(Q[u_index].node->position == goal)
-		{
-			reconstruction(tmp_path, start, goal);
-			return;
-		}
-		Q.erase(Q.begin() + u_index);
-
-		// line 17
-		for(unsigned int i = 0; i < u.node->children.size(); i++)
-		{
-			// line 18
-			float alt = u.distance + distance(u.node, u.node->children[i]);
-			unsigned int v_index = get_node_index(u.node->children[i], Q);
-
-			// line 19
-			if(alt < Q[v_index].distance)
+			DjikstraRRTNode v;
+			float v_dist = INFINITY;
+			for(int i = 0; i < hacked_Q.size(); i++)
 			{
-				// line 20
-				Q[v_index].distance = alt;
-				// line 21
-				Q[v_index].previous = u.node;
-				// basically line 23
-				tmp_path.push_back(Q[v_index]);
+				v = hacked_Q.top();
+				Q.pop();
+				if(v.node == child)
+				{
+					v_dist = v.distance;
+					break;
+				}
+			}
+
+			if(alt < v_dist)
+			{
+				v.distance = alt;
+				v.previous = u.node;
+				path.push_back(v);
+				Q.pop();
 			}
 		}
 	}
-
-	reconstruction(tmp_path, start, goal);
 }
-
-void DjikstraRRT::reconstruction(std::vector<DjikstraRRTNode> tmp_path, RRTNode *start, cv::Vec2i goal)
-{
-	for(unsigned int i = tmp_path.size() - 1; i > 0; i--)
-	{
-		if(tmp_path[i].previous != nullptr)
-		{
-			path.push_back(tmp_path[i].previous);
-		}
-	}
-}
-
 
 DjikstraRRTNode DjikstraRRT::min_distance_in_Q(std::vector<DjikstraRRTNode> Q)
 {
