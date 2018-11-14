@@ -32,8 +32,8 @@ class Robot
 		DjikstraRRT rrt_path;
 
 		Robot();
-		void run_rrt();
-		void run_quadtree();
+		void run_rrt(int start_x, int start_y, int end_x, int end_y);
+		void run_quadtree(int start_x, int start_y, int end_x, int end_y);
 
 	private:
 		void pose_callback(const nav_msgs::Odometry::ConstPtr &o);

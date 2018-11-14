@@ -27,13 +27,13 @@ void Robot::pose_callback(const nav_msgs::Odometry::ConstPtr &o)
 }
 
 
-void Robot::run_rrt()
+void Robot::run_rrt(int start_x, int start_y, int end_x, int end_y)
 {
 	ros::Rate rate(1);
 	cv::Vec2d position = cv::Vec2d(-15.277f, 13.266f);
 	//cv::Vec2i pixel_position = map.get_pixel_coordinates(-15.277f, 13.266f, 689, 809, 28.806f);
-	cv::Vec2i pixel_position = cv::Vec2i(233, 203);
-	cv::Vec2i goal_position = cv::Vec2i(494, 261);
+	cv::Vec2i pixel_position = cv::Vec2i(start_x, start_y);
+	cv::Vec2i goal_position = cv::Vec2i(end_x, end_y);
 
 	rrt = RRT(goal_position, 4); // step size 3 pixels
 	rrt.build_rrt(pixel_position, map, 10);
@@ -58,7 +58,7 @@ void Robot::run_rrt()
 }
 
 
-void Robot::run_quadtree()
+void Robot::run_quadtree(int start_x, int start_y, int end_x, int end_y)
 {
 	ros::Rate rate(1);
 	cv::Vec2d position = cv::Vec2d(-15.277f, 13.266f);
@@ -133,6 +133,9 @@ void Robot::rrt_write_image(int rows, int columns)
 			cv::line(image, rrt.nodes[i]->position, rrt.nodes[i]->children[j]->position, cv::Scalar(255, 255, 0));
 		}
 	}
+
+	cv::circle(image, rrt.nodes[0]->position, 10, cv::Scalar(255, 0, 255));
+	cv::circle(image, rrt.nodes[rrt.nodes.size() - 1]->position, 10, cv::Scalar(0, 255, 0));
 
 	/*
 	// draw the path in.... RED???
