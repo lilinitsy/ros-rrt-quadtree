@@ -31,10 +31,11 @@ void Robot::run()
 {
 	ros::Rate rate(1);
 	cv::Vec2d position = cv::Vec2d(-15.277f, 13.266f);
-	cv::Vec2i pixel_position = map.get_pixel_coordinates(-15.277f, 13.266f, 689, 809, 28.806f);
-	cv::Vec2i goal_position = cv::Vec2i(586, 458);
+	//cv::Vec2i pixel_position = map.get_pixel_coordinates(-15.277f, 13.266f, 689, 809, 28.806f);
+	cv::Vec2i pixel_position = cv::Vec2i(233, 203);
+	cv::Vec2i goal_position = cv::Vec2i(494, 261);
 
-	rrt = RRT(goal_position, 3); // step size 3 pixels
+	rrt = RRT(goal_position, 4); // step size 3 pixels
 	rrt.build_rrt(pixel_position, map, 10);
 	printf("RRT built\n");
 	printf("RRT nodes size: %lu\n", rrt.nodes.size());

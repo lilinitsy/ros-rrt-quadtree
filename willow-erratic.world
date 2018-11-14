@@ -65,7 +65,7 @@ floorplan
 ( 
   name "autolab"
   bitmap "bitmaps/autolab.png"
-  size [60.0 60.0 0.5] # meters
+  size [54.0 58.7 0.5] # meters
   pose [ 0 0 0 0 ]
 )
 
