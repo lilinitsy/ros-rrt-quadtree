@@ -21,12 +21,11 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 	leaf_nodes.push_back(start_node);
 	int z = 0;
 	cv::Vec2i begin_pos = start;
-	//while(!goal_found())
+
+	// while(!goal_found()) // might be preferable
 	while(z < 3000)
 	{
 		z++;
-
-		// and then have a 10% chance the goal node is picked.
 		int random_choice = rand() % 20;
 		cv::Vec2i local_goal_position;
 		RRTNode *begin_node;
@@ -60,20 +59,12 @@ void RRT::build_rrt(cv::Vec2i start, ReadMapModule map, int iterations)
 		else if(status == TRAPPED)
 		{
 			printf("TRAPPED\n");
-		//	RRTNode *last_node = nodes[nodes.size() - 1];
-		//	nodes.erase(nodes.end());
-		//	delete last_node;
 		}
 	}
 
 	if(z >= 3000)
 	{
-		printf("goal not reached\n");
-	}
-
-	else
-	{
-		printf("GOAL REACHED\n");
+		printf("goal not reached in %d iterations\n", z);
 	}
 }
 

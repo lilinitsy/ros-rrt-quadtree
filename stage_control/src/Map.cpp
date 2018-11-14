@@ -51,15 +51,9 @@ void ReadMapModule::construct_map(cv::Mat image)
 			if(colour.val[0] < 50 && colour.val[1] < 50 && colour.val[2] < 50)
 			{
 				map[i][j].blocked = true;
-				std::cout << "Blocked at (" << i << ", " << j << ")" << std::endl;
 			}
 		}
 	}
-
-	cv::Vec3b colour = image.at<cv::Vec3b>(cv::Point(404, 245));
-	std::cout << "Colour at 404, 245: " << colour << std::endl;
-	cv::Vec3b colour2 = image.at<uchar>(cv::Point(808, 526));
-	std::cout << "Colour at 808, 526: " << colour << std::endl;
 }
 
 // this might be broken
