@@ -43,6 +43,9 @@ void Robot::run()
 	printf("pixel_position: %d %d\n", pixel_position.val[0], pixel_position.val[1]);
 	write_image(689, 809);
 
+	// initialize djikstraRRT path here
+	// after doing that, go through the path and convert coordinates
+
 	while(ros::ok())
 	{
 		ros::spinOnce();

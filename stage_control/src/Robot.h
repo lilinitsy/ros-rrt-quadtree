@@ -11,6 +11,7 @@
 #include <std_msgs/String.h>
 
 
+#include "DjikstraRRT.h"
 #include "Map.h"
 #include "RRTNode.h"
 #include "RRT.h"
@@ -26,6 +27,7 @@ class Robot
 
 		RRT rrt;
 		ReadMapModule map;
+		DjikstraRRT rrt_path;
 
 		Robot();
 		void run();
